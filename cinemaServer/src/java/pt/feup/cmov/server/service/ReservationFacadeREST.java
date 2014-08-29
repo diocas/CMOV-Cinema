@@ -38,10 +38,11 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
     }
 /*
 
-    @DELETE
+    @PUT
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    @Consumes({"application/json"})
+    public void edit(@PathParam("id") Integer id, Reservation entity) {
+        super.edit(entity);
     }
 
     @GET
@@ -81,11 +82,10 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
         super.create(entity);
     }
 
-    @PUT
+    @DELETE
     @Path("{id}")
-    @Consumes({"application/json"})
-    public void edit(@PathParam("id") Integer id, Reservation entity) {
-        super.edit(entity);
+    public void remove(@PathParam("id") Integer id) {
+        super.remove(super.find(id));
     }
 
     @GET

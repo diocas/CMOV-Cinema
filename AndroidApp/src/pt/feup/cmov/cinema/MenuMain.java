@@ -12,7 +12,8 @@ import java.util.Locale;
 
 import org.json.JSONObject;
 
-import pt.feup.cmov.common.Movie;
+import pt.feup.cmov.common.*;
+import pt.feup.cmov.server.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MenuMain extends Activity {
 
@@ -65,7 +67,7 @@ public class MenuMain extends Activity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		
-		new GetMoviesRunnable().execute();
+		teste();
 
 	}
 
@@ -94,9 +96,6 @@ public class MenuMain extends Activity {
 
 		@Override
 		public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class
-			// below).
 			switch (position) {
 			case 0:
 				return new Movies();
@@ -144,64 +143,25 @@ public class MenuMain extends Activity {
 		}
 	}
 
-	class GetMoviesRunnable extends AsyncTask<Void,Void,Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
+	
+	void teste(){
+		ServerConnection<ArrayList<Movie>> serverConnection = new ServerConnection<ArrayList<Movie>>(new ServerResultHandler<ArrayList<Movie>>() {
 			
-			HttpURLConnection con = null;
-			String payload = "Error";
-			String result = "Error";
-			try {
-
-				// Build RESTful query (GET)
-				// URL url = new
-				// URL("http://192.168.104.114:8080/RestClinic/Doctors/Docs/" +
-				// key);
-				URL url = new URL(
-						"http://169.254.248.128:8080/cinemaServer/arrabida20/movies/2014-08-24");
-
-				con = (HttpURLConnection) url.openConnection();
-				con.setReadTimeout(10000); 
-				con.setConnectTimeout(15000); 
-				con.setRequestMethod("GET");
-				con.setDoInput(true);
-
-				// Start the query
-				con.connect();
-
-				// Read results from the query
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(con.getInputStream(), "UTF-8"));
-				payload = reader.readLine();
-				reader.close();
-			} catch (IOException e) {
-			} finally {
-				if (con != null)
-					con.disconnect();
+			@Override
+			public void onServerResultSucess(ArrayList<Movie> response, int httpStatusCode) {
+				
+				
+				for(Movie movie : response)
+					System.out.println(movie.getName());
 			}
-			System.out.println(payload);
-			if (payload != "Error") {
-				Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-				Type listOfMovie = new TypeToken<List<Movie>>() {
-				}.getType();
-				ArrayList<Movie> movies = gson.fromJson(payload, listOfMovie);
-
-				result = movies.get(0).getName();
-
-			}
-			final String p = payload;
-			final String r = result;
-			runOnUiThread(new Runnable() {
-				public void run() {
-					EditText text = (EditText) findViewById(R.id.info_servidor);
-					text.setText("P: " + p + " \nR: " + r);
+			
+			@Override
+			public void onServerResultFailure(Exception exception) {
+				System.err.println(exception);
 				}
-			});
-			
-			
-			return null;
-		}
+		}, new TypeToken<List<Movie>>() {}.getType());
+		
+		serverConnection.execute(new ServerAction(ServerActions.MoviesGet, "2014-08-24"));
 	}
 
 }
