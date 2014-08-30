@@ -85,6 +85,8 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
         return String.valueOf(super.count());
     }*/
 
+    //TODO: get das sessoes para filmes ativos    
+    
     @GET
     @Path("{id}")
     @Produces({"application/json"})
