@@ -11,17 +11,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="@string/movies"
+        android:text="@string/reservations"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <RelativeLayout
-        android:id="@+id/movies_progressBar"
+        android:id="@+id/reservations_progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" >
 
         <ProgressBar
-            android:id="@+id/moviesSpiner"
+            android:id="@+id/reservationsSpiner"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/moviesList"
+        android:id="@+id/reservationsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

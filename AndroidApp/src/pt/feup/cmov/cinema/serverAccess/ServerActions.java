@@ -1,7 +1,5 @@
 package pt.feup.cmov.cinema.serverAccess;
 
-import java.sql.Date;
-
 public enum ServerActions
 {
 	MoviesGet,

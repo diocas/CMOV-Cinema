@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "cinemaDB";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	
 	public static final String TABLE_MOVIE = "movie";
@@ -56,7 +56,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	public static final String TABLE_RESERVATION = "reservation";
 	public static final String RESERVATION_ID = "_id";
 	public static final String RESERVATION_SESSION_ID = "reservation_id";
-	public static final String RESERVATION_ID_USER = "user_id";
 	public static final String RESERVATION_PLACES = "places";
 	public static final String RESERVATION_DATE = "date";
 	public static final String RESERVATION_UPDATE_DATE = "updateDate";
@@ -64,11 +63,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String TABLE_RESERVATION_CREATE = "create table "
 			+ TABLE_RESERVATION + "(" + RESERVATION_ID + " integer primary key autoincrement, "
-					+ RESERVATION_SESSION_ID + " integer, "
-					+ RESERVATION_ID_USER + " text not null, "
+					+ RESERVATION_SESSION_ID + " integer not null, "
 					+ RESERVATION_PLACES + " text not null, "
 					+ RESERVATION_DATE + " text not null, "
-					+ RESERVATION_UPDATE_DATE + " text not null, "
+					+ RESERVATION_UPDATE_DATE + " text, "
 					+ " FOREIGN KEY ("+RESERVATION_SESSION_ID+") REFERENCES "+TABLE_SESSION+" ("+SESSION_ID+"));";
 
 	public DBHelper(Context context) {

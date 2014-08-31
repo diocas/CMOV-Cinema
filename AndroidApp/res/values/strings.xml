@@ -2,11 +2,22 @@
 <resources>
 
     <string name="app_name">Cinema</string>
-    <string name="title_section1">Cartaz</string>
-    <string name="title_section2">Reservas</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_update">Update info</string>
     <string name="movies">Movies</string>
     <string name="reservations">Reservations</string>
+    <string name="internet_not_available">Internet connection not available</string>
+    <string name="update_failed">Update failed</string>
+    <string name="update_failed_movies">Movies update failed</string>
+    <string name="update_failed_reservations">Reservations update failed</string>
+    <string name="update_failed_sessions">Sessions update failed</string>
+    <string name="title_activity_movie_info">MovieInfo</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+    <string name="title_activity_login">Login</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="title_activity_reservation_info">Reservation</string>
 
 </resources>

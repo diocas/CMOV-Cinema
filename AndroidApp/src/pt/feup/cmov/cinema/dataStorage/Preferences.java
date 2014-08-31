@@ -8,35 +8,48 @@ import android.content.SharedPreferences;
 
 public class Preferences {
 
+	private String SharedPreferencesName = "cinemaprefs";
 	private static SharedPreferences storedData;
 	private static String lastUpdateDate;
     private static String userId;
 	
 	public Preferences(Activity main) {
-		storedData = main.getPreferences(main.MODE_PRIVATE);
+		storedData = main.getSharedPreferences(SharedPreferencesName, main.MODE_PRIVATE);
 		lastUpdateDate = storedData.getString("lastUpdateDate", "0000-00-00");
-		userId = storedData.getString("userId", "1");
+		userId = storedData.getString("userId", "-1");
 	}
 	
-	static String getLastUpdateDate() {
+	public static String getLastUpdateDate() {
 		return lastUpdateDate;
 	}
 	
-	static String getUserId() {
+	public static String getUserId() {
 		return userId;
 	}
 	
-	static void setUserId(String id) {
+	public static void setUserId(String id) {
 		SharedPreferences.Editor storedDataEditor = storedData.edit();
 		storedDataEditor.putString("userId", id);
 		storedDataEditor.commit();
+		userId = id;
 	}
 	
-	static void updateLastUpdateDate() {
+	public static void updateLastUpdateDate() {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 	    Date now = new Date();
 		SharedPreferences.Editor storedDataEditor = storedData.edit();
 		storedDataEditor.putString("lastUpdateDate", sdfDate.format(now));
 		storedDataEditor.commit();
+		lastUpdateDate = sdfDate.format(now);
+	}
+
+	public static void clearAll() {
+		SharedPreferences.Editor storedDataEditor = storedData.edit();
+		storedDataEditor.remove("userId");
+		storedDataEditor.remove("lastUpdateDate");
+		storedDataEditor.clear();
+		storedDataEditor.commit();
+		lastUpdateDate = null;
+		userId = null;
 	}
 }

@@ -8,8 +8,11 @@ package pt.feup.cmov.server.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -82,16 +85,27 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
     @Path("count")
     @Produces("text/plain")
     public String countREST() {
-        return String.valueOf(super.count());
-    }*/
-
-    //TODO: get das sessoes para filmes ativos    
+        return String.valueOf(super.count());  
     
     @GET
     @Path("{id}")
     @Produces({"application/json"})
     public Session find(@PathParam("id") Integer id) {
         return super.find(id);
+    }
+    }*/
+
+    @GET
+    @Path("{date}")
+    @Produces({"application/json"})
+    public List<Session> find(@PathParam("date") String date) throws ParseException {
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        
+        return em.createNamedQuery("Session.findByUpdateDateGreater")
+            .setParameter("currentDate", new Date())
+            .setParameter("updateDate", df.parse(date))
+            .getResultList();
     }
 
     @GET

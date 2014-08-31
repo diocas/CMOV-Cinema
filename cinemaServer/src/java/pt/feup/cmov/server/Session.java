@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Session.findByIdSession", query = "SELECT s FROM Session s WHERE s.idSession = :idSession"),
     @NamedQuery(name = "Session.findByTime", query = "SELECT s FROM Session s WHERE s.time = :time"),
     @NamedQuery(name = "Session.findByRoom", query = "SELECT s FROM Session s WHERE s.room = :room"),
-    @NamedQuery(name = "Session.findByMovie", query = "SELECT s FROM Session s WHERE s.idMovie = :idMovie")})
+    @NamedQuery(name = "Session.findByMovie", query = "SELECT s FROM Session s WHERE s.idMovie = :idMovie"),
+    @NamedQuery(name = "Session.findByUpdateDateGreater", query = "SELECT DISTINCT s FROM Session s, Movie m WHERE m.updateDate >= :updateDate AND m.dateFrom <= :currentDate AND m.dateUntil >= :currentDate")})
 public class Session implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

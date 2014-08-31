@@ -14,6 +14,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -44,6 +47,12 @@ public class ServerConnection<T> extends AsyncTask<ServerAction<T>, Void, Intege
 			
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpRequest httpRequest = requestServiceAction.getHttpRequest(requestURL.toURI());
+			
+			HttpParams httpParameters = new BasicHttpParams();
+			HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);
+			HttpConnectionParams.setSoTimeout(httpParameters, 10000);
+			
+			httpRequest.setParams(httpParameters);
 			
 		    HttpResponse response = httpClient.execute((HttpUriRequest) httpRequest);
 		    
