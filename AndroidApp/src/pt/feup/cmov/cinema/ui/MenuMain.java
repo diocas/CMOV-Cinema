@@ -75,7 +75,7 @@ public class MenuMain extends Activity {
 		String[] columnsMovies = new String[] { DBHelper.MOVIE_NAME };
 		int[] toMovies = new int[] { R.id.movie_info_name };
 
-		moviesAdapter = new SimpleCursorAdapter(this, R.layout.list_item_movie,
+		moviesAdapter = new ListMovie(this, R.layout.list_item_movie,
 				dataSource.getMoviesCursor(), columnsMovies, toMovies, 0);
 
 		String[] columnsReservations = new String[] { DBHelper.RESERVATION_DATE };
