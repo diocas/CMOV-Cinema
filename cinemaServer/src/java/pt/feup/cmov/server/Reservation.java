@@ -36,9 +36,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Reservation.findByPlaces", query = "SELECT r FROM Reservation r WHERE r.places = :places"),
     @NamedQuery(name = "Reservation.findByDate", query = "SELECT r FROM Reservation r WHERE r.date = :date"),
     @NamedQuery(name = "Reservation.findByUpdateDate", query = "SELECT r FROM Reservation r WHERE r.updateDate = :updateDate"),
-    @NamedQuery(name = "Reservation.occupiedSeats", query = "SELECT r.places FROM Reservation r WHERE r.idSession = :idSession"),
+    @NamedQuery(name = "Reservation.occupiedSeats", query = "SELECT r.places FROM Reservation r WHERE r.idSession = :idSession AND r.date = :date"),
     @NamedQuery(name = "Reservation.findByUser", query = "SELECT r FROM Reservation r WHERE r.idUser = :idUser"),
-    @NamedQuery(name = "Reservation.findByUserAndUpdateDate", query = "SELECT r FROM Reservation r WHERE r.idUser = :idUser AND r.updateDate >= :updateDate")})
+    @NamedQuery(name = "Reservation.findByUserAndUpdateDate", query = "SELECT r FROM Reservation r WHERE r.idUser = :idUser AND r.updateDate >= :updateDate"),
+    @NamedQuery(name = "Reservation.lastIndex", query = "SELECT MAX(r.idReservation) AS total FROM Reservation r")})
 public class Reservation implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

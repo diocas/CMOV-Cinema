@@ -257,6 +257,21 @@ public class DBDataSource {
 		return sessions;
 	}
 
+	public List<Session> getSessionByMovie(long id) {
+		List<Session> sessions = new ArrayList<Session>();
+		
+		Cursor cursor = getSessionByMovieCursor(id);
+	
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Session session = cursorToSession(cursor);
+			sessions.add(session);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return sessions;
+	}
+
 	public Cursor getSessionByMovieCursor(long id) {
 		return database.query(DBHelper.TABLE_SESSION,
 				allColumnsSession, DBHelper.SESSION_MOVIE_ID + "=?",

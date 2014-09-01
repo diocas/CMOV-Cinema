@@ -96,7 +96,8 @@ public class ServerAction<T> {
 	
 	public String getRequestBody()
 	{
-		return new Gson().toJson(RequestBody);
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+		return gson.toJson(RequestBody);
 	}
 
 	public Object convertFromJson(String json, Type type)

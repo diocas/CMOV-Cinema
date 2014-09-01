@@ -12,6 +12,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -32,7 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Useracount.findAll", query = "SELECT u FROM Useracount u"),
     @NamedQuery(name = "Useracount.findByIdUser", query = "SELECT u FROM Useracount u WHERE u.idUser = :idUser"),
-    @NamedQuery(name = "Useracount.findByEmail", query = "SELECT u FROM Useracount u WHERE u.email = :email")})
+    @NamedQuery(name = "Useracount.findByEmail", query = "SELECT u FROM Useracount u WHERE u.email = :email"),
+    @NamedQuery(name = "Useracount.lastIndex", query = "SELECT MAX(u.idUser) AS total FROM Useracount u")})
 public class Useracount implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

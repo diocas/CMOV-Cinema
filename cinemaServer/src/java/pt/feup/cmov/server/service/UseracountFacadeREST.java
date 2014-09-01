@@ -70,8 +70,14 @@ public class UseracountFacadeREST extends AbstractFacade<Useracount> {
     }*/
     
     @POST
+    @Path("/new")
     @Consumes({"application/json"})
     public String createUser(Useracount entity) {
+        
+        Object ole = em.createNamedQuery("Useracount.lastIndex")
+            .getSingleResult();
+        
+        entity.setIdUser(Integer.decode(ole.toString()) + 1);
         super.create(entity);
         return String.valueOf(entity.getIdUser());
     }
@@ -88,6 +94,15 @@ public class UseracountFacadeREST extends AbstractFacade<Useracount> {
     @Produces({"application/json"})
     public Useracount find(@PathParam("id") Integer id) {
         return super.find(id);
+    }
+
+    @GET
+    @Path("email/{email}")
+    @Produces({"application/json"})
+    public Useracount find(@PathParam("email") String email) {
+        return em.createNamedQuery("Useracount.findByEmail", Useracount.class)
+            .setParameter("email", email)
+            .getSingleResult();
     }
 
     @Override

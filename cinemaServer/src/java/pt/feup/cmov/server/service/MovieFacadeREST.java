@@ -91,6 +91,13 @@ public class MovieFacadeREST extends AbstractFacade<Movie> {
     }
 */
     
+//    @GET
+//    @Path("{id}")
+//    @Produces({"application/json"})
+//    public Movie find(@PathParam("id") Integer id) {
+//        return super.find(id);
+//    }
+    
     @GET
     @Path("{date}")
     @Produces({"application/json"})

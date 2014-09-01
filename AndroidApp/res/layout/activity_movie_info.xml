@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,16 +6,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:gravity="center|top"
+    android:orientation="vertical"
     tools:context="pt.feup.cmov.cinema.ui.MovieInfo" >
 
     <TextView
         android:id="@+id/movie_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/new_reservation_movie_name"
+        android:layout_below="@+id/new_reservation_movie_name"
         android:layout_marginTop="16dp"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-</RelativeLayout>
+    <ListView
+        android:id="@+id/movie_sessions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/movie_name" >
+
+    </ListView>
+
+</LinearLayout>

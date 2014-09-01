@@ -19,5 +19,17 @@
     <string name="register">Register</string>
     <string name="email">Email</string>
     <string name="title_activity_reservation_info">Reservation</string>
+    <string name="user_not_found">User not found</string>
+    <string name="failed_register">Register failed</string>
+    <string name="title_activity_new_reservation">Reservation</string>
+    <string name="new_reservation">New reservation</string>
+    <string name="invalid_date">Invalid date</string>
+    <string name="no_seats">No seats available</string>
+    <string name="row_front">Front</string>
+    <string name="row_back">Back</string>
+    <string name="column_left">Left</string>
+    <string name="column_center">Center</string>
+    <string name="column_right">Right</string>
+    <string name="finish_reservation">Finish</string>
 
 </resources>

@@ -6,8 +6,11 @@
 
 package pt.feup.cmov.server.service;
 
+import com.google.gson.GsonBuilder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -21,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import pt.feup.cmov.server.Reservation;
+import pt.feup.cmov.server.Session;
 import pt.feup.cmov.server.Useracount;
 
 /**
@@ -74,12 +78,33 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
     }
     
     */
+    @GET
+    @Path("{id}")
+    @Produces({"application/json"})
+    public Reservation find(@PathParam("id") Integer id) {
+        return super.find(id);
+    }
     
     @POST
-    @Override
     @Consumes({"application/json"})
-    public void create(Reservation entity) {
+    public String newReservation(Reservation entity) {
+        
+        Object reservationId = em.createNamedQuery("Reservation.lastIndex")
+                .getSingleResult();
+        
+        Session session = em.createNamedQuery("Session.findByIdSession", Session.class)
+            .setParameter("idSession", entity.getIdSession().getIdSession())
+            .getSingleResult();
+        
+        Useracount user = em.createNamedQuery("Useracount.findByIdUser", Useracount.class)
+            .setParameter("idUser", entity.getIdUser().getIdUser())
+            .getSingleResult();
+        
+        entity.setIdReservation(Integer.decode(reservationId.toString()) + 1);
+        entity.setIdUser(user);
+        entity.setIdSession(session);
         super.create(entity);
+        return String.valueOf(entity.getIdReservation());
     }
 
     @DELETE

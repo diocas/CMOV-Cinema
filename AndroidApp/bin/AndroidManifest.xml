@@ -41,11 +41,18 @@
                 android:value="pt.feup.cmov.cinema.ui.MenuMain" />
         </activity>
         <activity
-            android:name="pt.feup.cmov.cinema.ui.ReservationInfo"
+            android:name=".ui.ReservationInfo"
             android:label="@string/title_activity_reservation_info" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pt.feup.cmov.cinema.ui.MenuMain" />
+        </activity>
+        <activity
+            android:name="pt.feup.cmov.cinema.ui.NewReservation"
+            android:label="@string/title_activity_new_reservation" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pt.feup.cmov.cinema.ui.MovieInfo" />
         </activity>
     </application>
 

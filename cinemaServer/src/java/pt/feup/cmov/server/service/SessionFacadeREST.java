@@ -86,15 +86,19 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
     @Produces("text/plain")
     public String countREST() {
         return String.valueOf(super.count());  
-    
-    @GET
-    @Path("{id}")
-    @Produces({"application/json"})
-    public Session find(@PathParam("id") Integer id) {
-        return super.find(id);
-    }
     }*/
 
+    
+    
+    @GET
+    @Path("id/{id}")
+    @Produces({"application/json"})
+    public Session find(@PathParam("id") Integer id)  {
+        return super.find(id);
+    }
+
+    
+    
     @GET
     @Path("{date}")
     @Produces({"application/json"})
@@ -119,11 +123,13 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
     }
 
     @GET
-    @Path("seats/{id}/{location}")
+    @Path("seats/{id}/{date}/{location}")
     @Produces({"application/json"})
-    public String freeSeats(@PathParam("id") Integer id, @PathParam("location") Location location) {
+    public String freeSeats(@PathParam("id") Integer id, @PathParam("date") String date, @PathParam("location") Location location) throws ParseException {
 
         Session session = em.find(Session.class, id);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        
         
         if(session == null)
             return "Not valid";
@@ -131,7 +137,9 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
         List<String> availableSeats = Arrabida20.getSeats(super.find(id).getRoom(), location);
         
         List<String> reservations = em.createNamedQuery("Reservation.occupiedSeats")
-            .setParameter("idSession", session).getResultList();
+            .setParameter("idSession", session)
+            .setParameter("date", df.parse(date))
+            .getResultList();
         
         for(String reservation : reservations) {
             availableSeats.removeAll(Arrays.asList(reservation.split(",")));
@@ -141,11 +149,13 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
     }
 
     @GET
-    @Path("seats/{id}/{location}/count")
+    @Path("seats/{id}/{date}/{location}/count")
     @Produces({"application/json"})
-    public String freeSeatsLocationCount(@PathParam("id") Integer id, @PathParam("location") Location location) {
+    public String freeSeatsLocationCount(@PathParam("id") Integer id, @PathParam("date") String date, @PathParam("location") Location location) throws ParseException {
 
         Session session = em.find(Session.class, id);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        
         
         if(session == null)
             return "Not valid";
@@ -153,7 +163,9 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
         List<String> availableSeats = Arrabida20.getSeats(super.find(id).getRoom(), location);
         
         List<String> reservations = em.createNamedQuery("Reservation.occupiedSeats")
-            .setParameter("idSession", session).getResultList();
+            .setParameter("idSession", session)
+            .setParameter("date", df.parse(date))
+            .getResultList();
         
         for(String reservation : reservations) {
             availableSeats.removeAll(Arrays.asList(reservation.split(",")));
@@ -161,13 +173,29 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
         
         return String.valueOf(availableSeats.size());
     }
+
+    @GET
+    @Path("seats/{id}/{date}/list/count")
+    @Produces({"application/json"})
+    public String freeSeatsLocationCountList(@PathParam("id") Integer id, @PathParam("date") String date) throws ParseException {
+        List<String> locations = new ArrayList<>();
+        locations.add(freeSeatsLocationCount(id, date, Location.FrontLeft));
+        locations.add(freeSeatsLocationCount(id, date, Location.FrontCenter));
+        locations.add(freeSeatsLocationCount(id, date, Location.FrontRight));
+        locations.add(freeSeatsLocationCount(id, date, Location.BackLeft));
+        locations.add(freeSeatsLocationCount(id, date, Location.BackCenter));
+        locations.add(freeSeatsLocationCount(id, date, Location.BackRight));
+        return new GsonBuilder().create().toJson(locations);
+    }
     
     @GET
-    @Path("seats/{id}/count")
+    @Path("seats/{id}/{date}/count")
     @Produces({"application/json"})
-    public String freeSeatsCount(@PathParam("id") Integer id) {
+    public String freeSeatsCount(@PathParam("id") Integer id, @PathParam("date") String date) throws ParseException {
         
         Session session = em.find(Session.class, id);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        
         
         if(session == null)
             return "Not valid";
@@ -175,7 +203,9 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
         int total = Arrabida20.getNumSeats(super.find(id).getRoom());
         
         List<String> reservations = em.createNamedQuery("Reservation.occupiedSeats")
-            .setParameter("idSession", session).getResultList();
+            .setParameter("idSession", session)
+            .setParameter("date", df.parse(date))
+            .getResultList();
         
         for(String reservation : reservations) {
             total -= reservation.split(",").length;

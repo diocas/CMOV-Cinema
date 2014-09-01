@@ -3,6 +3,7 @@ package pt.feup.cmov.cinema.serverAccess;
 public enum ServerActions
 {
 	MoviesGet,
+	ReservationGet,
 	ReservationGetByUser,
 	ReservationGetByUserUpdateDate,
 	ReservationPost,
@@ -11,6 +12,7 @@ public enum ServerActions
 	SessionsGetByMovie,
 	SessionGetAvailableSeats,
 	SessionGetAvailableSeatsCount,
+	SessionGetAvailableSeatsCountList,
 	SessionGetTotalSeatsCount,
 	UserGetAccount,
 	UserPost,
@@ -29,6 +31,8 @@ public enum ServerActions
 		{
 		case MoviesGet:
 			return "movies/%s";
+		case ReservationGet:
+			return "reservations/%s";
 		case ReservationGetByUser:
 			return "reservations/user/%s";
 		case ReservationGetByUserUpdateDate:
@@ -42,15 +46,17 @@ public enum ServerActions
 		case SessionsGetByMovie:
 			return "sessions/movie/%s";
 		case SessionGetAvailableSeats:
-			return "sessions/seats/%s/%s";
+			return "sessions/seats/%s/%s/%s";
 		case SessionGetAvailableSeatsCount:
-			return "sessions/seats/%s/%s/count";
+			return "sessions/seats/%s/%s/%s/count";
+		case SessionGetAvailableSeatsCountList:
+			return "sessions/seats/%s/%s/list/count";
 		case SessionGetTotalSeatsCount:
-			return "sessions/seats/%s/count";
+			return "sessions/seats/%s/%s/count";
 		case UserGetAccount:
-			return "users/%s";
+			return "users/email/%s";
 		case UserPost:
-			return "users/";
+			return "users/new/";
 		case UserPut:
 			return "users/%s";
 		default:

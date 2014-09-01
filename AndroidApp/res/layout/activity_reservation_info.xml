@@ -12,8 +12,8 @@
         android:id="@+id/reservation_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/new_reservation_movie_name"
+        android:layout_below="@+id/new_reservation_movie_name"
         android:layout_marginTop="16dp"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
