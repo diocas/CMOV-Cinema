@@ -238,6 +238,7 @@ public class NewReservation extends Activity {
 		}
 	};
 
+	@SuppressWarnings("unchecked")
 	private void hasSeats() {
 
 		placesLoader.setVisibility(View.VISIBLE);
@@ -266,12 +267,13 @@ public class NewReservation extends Activity {
 				}, new TypeToken<String>() {
 				}.getType());
 
-		serverConnection.execute(new ServerAction(
+		serverConnection.execute(new ServerAction<String>(
 				ServerActions.SessionGetTotalSeatsCount, session.getIdSession()
 						.toString(), chosenDateString));
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void chooseLocationAndSeats() {
 		ServerConnection<List<String>> serverConnection = new ServerConnection<List<String>>(
 				new ServerResultHandler<List<String>>() {
@@ -291,7 +293,7 @@ public class NewReservation extends Activity {
 				}, new TypeToken<List<String>>() {
 				}.getType());
 
-		serverConnection.execute(new ServerAction(
+		serverConnection.execute(new ServerAction<List<String>>(
 				ServerActions.SessionGetAvailableSeatsCountList, session
 						.getIdSession().toString(), chosenDateString));
 	}
@@ -363,6 +365,7 @@ public class NewReservation extends Activity {
 			this.place = place;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(View v) {
 
@@ -388,7 +391,7 @@ public class NewReservation extends Activity {
 
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-			serverConnectionReservations.execute(new ServerAction(
+			serverConnectionReservations.execute(new ServerAction<List<String>>(
 					ServerActions.SessionGetAvailableSeats, String
 							.valueOf(session.getIdSession()), df
 							.format(currentReservation.getDate()), place));
@@ -399,6 +402,7 @@ public class NewReservation extends Activity {
 	public class FinishReservationButtonOnClickListener implements
 			OnClickListener {
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(View v) {
 			currentReservation.setUpdateDate(new Date());
@@ -425,7 +429,7 @@ public class NewReservation extends Activity {
 					}, new TypeToken<String>() {
 					}.getType());
 
-			serverConnectionReservations.execute(new ServerAction(
+			serverConnectionReservations.execute(new ServerAction<String>(
 					ServerActions.ReservationPost, currentReservation));
 		}
 

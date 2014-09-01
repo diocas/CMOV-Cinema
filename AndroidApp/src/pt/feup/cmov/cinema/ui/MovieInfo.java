@@ -2,29 +2,27 @@ package pt.feup.cmov.cinema.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import pt.feup.cmov.cinema.R;
-import pt.feup.cmov.cinema.commonModels.*;
+import pt.feup.cmov.cinema.commonModels.Movie;
+import pt.feup.cmov.cinema.commonModels.Session;
 import pt.feup.cmov.cinema.dataStorage.DBDataSource;
 import pt.feup.cmov.cinema.dataStorage.DBHelper;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class MovieInfo extends Activity {
 

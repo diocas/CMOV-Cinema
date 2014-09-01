@@ -12,21 +12,10 @@ import pt.feup.cmov.cinema.serverAccess.ServerActions;
 import pt.feup.cmov.cinema.serverAccess.ServerConnection;
 import pt.feup.cmov.cinema.serverAccess.ServerResultHandler;
 import pt.feup.cmov.cinema.ui.MenuMain;
+import android.database.sqlite.SQLiteConstraintException;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
-
-import android.app.Activity;
-import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 public class CinemaUpdater {
 
@@ -50,6 +39,7 @@ public class CinemaUpdater {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateMovies() {
 
 		ServerConnection<ArrayList<Movie>> serverConnectionMovies = new ServerConnection<ArrayList<Movie>>(
@@ -81,11 +71,12 @@ public class CinemaUpdater {
 				}, new TypeToken<List<Movie>>() {
 				}.getType());
 
-		serverConnectionMovies.execute(new ServerAction(
+		serverConnectionMovies.execute(new ServerAction<ArrayList<Movie>>(
 				ServerActions.MoviesGet, Preferences.getLastUpdateDate()));
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateSessions() {
 
 		ServerConnection<ArrayList<Session>> serverConnectionMovies = new ServerConnection<ArrayList<Session>>(
@@ -123,10 +114,11 @@ public class CinemaUpdater {
 				}, new TypeToken<List<Session>>() {
 				}.getType());
 
-		serverConnectionMovies.execute(new ServerAction(
+		serverConnectionMovies.execute(new ServerAction<ArrayList<Session>>(
 				ServerActions.SessionsGet, Preferences.getLastUpdateDate()));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateReservations() {
 
 		ServerConnection<ArrayList<Reservation>> serverConnectionReservations = new ServerConnection<ArrayList<Reservation>>(
@@ -166,7 +158,7 @@ public class CinemaUpdater {
 				}, new TypeToken<List<Reservation>>() {
 				}.getType());
 
-		serverConnectionReservations.execute(new ServerAction(
+		serverConnectionReservations.execute(new ServerAction<ArrayList<Reservation>>(
 				ServerActions.ReservationGetByUserUpdateDate, Preferences
 						.getUserId(), Preferences.getLastUpdateDate()));
 

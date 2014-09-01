@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Preferences {
@@ -14,7 +15,7 @@ public class Preferences {
     private static String userId;
 	
 	public Preferences(Activity main) {
-		storedData = main.getSharedPreferences(SharedPreferencesName, main.MODE_PRIVATE);
+		storedData = main.getSharedPreferences(SharedPreferencesName, Context.MODE_PRIVATE);
 		lastUpdateDate = storedData.getString("lastUpdateDate", "0000-00-00");
 		userId = storedData.getString("userId", "-1");
 	}

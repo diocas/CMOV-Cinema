@@ -1,12 +1,6 @@
 package pt.feup.cmov.cinema.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.reflect.TypeToken;
-
 import pt.feup.cmov.cinema.R;
-import pt.feup.cmov.cinema.commonModels.Movie;
 import pt.feup.cmov.cinema.commonModels.Useracount;
 import pt.feup.cmov.cinema.dataStorage.Preferences;
 import pt.feup.cmov.cinema.serverAccess.ServerAction;
@@ -15,13 +9,13 @@ import pt.feup.cmov.cinema.serverAccess.ServerConnection;
 import pt.feup.cmov.cinema.serverAccess.ServerResultHandler;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.gson.reflect.TypeToken;
 
 public class Login extends Activity {
 
@@ -47,6 +41,7 @@ public class Login extends Activity {
 			register_email = (EditText) findViewById(R.id.register_email);
 
 			login_submit.setOnClickListener(new View.OnClickListener() {
+				@SuppressWarnings("unchecked")
 				@Override
 				public void onClick(View v) {
 					ServerConnection<Useracount> serverConnectionMovies = new ServerConnection<Useracount>(
@@ -68,13 +63,14 @@ public class Login extends Activity {
 							}, new TypeToken<Useracount>() {
 							}.getType());
 
-					serverConnectionMovies.execute(new ServerAction(
+					serverConnectionMovies.execute(new ServerAction<Useracount>(
 							ServerActions.UserGetAccount, login_email.getText()
 									.toString()));
 				}
 			});
 
 			register_submit.setOnClickListener(new View.OnClickListener() {
+				@SuppressWarnings("unchecked")
 				@Override
 				public void onClick(View v) {
 					ServerConnection<String> serverConnectionMovies = new ServerConnection<String>(
@@ -96,7 +92,7 @@ public class Login extends Activity {
 							}, new TypeToken<String>() {
 							}.getType());
 
-					serverConnectionMovies.execute(new ServerAction(
+					serverConnectionMovies.execute(new ServerAction<String>(
 							ServerActions.UserPost, new Useracount(null,
 									register_email.getText().toString())));
 				}

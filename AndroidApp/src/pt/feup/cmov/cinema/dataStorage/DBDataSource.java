@@ -1,19 +1,17 @@
 package pt.feup.cmov.cinema.dataStorage;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import pt.feup.cmov.cinema.commonModels.*;
-import android.R.integer;
+import pt.feup.cmov.cinema.commonModels.Movie;
+import pt.feup.cmov.cinema.commonModels.Reservation;
+import pt.feup.cmov.cinema.commonModels.Session;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DBDataSource {

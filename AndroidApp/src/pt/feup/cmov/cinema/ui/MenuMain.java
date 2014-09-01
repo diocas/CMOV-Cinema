@@ -3,7 +3,6 @@ package pt.feup.cmov.cinema.ui;
 import java.util.Locale;
 
 import pt.feup.cmov.cinema.R;
-import pt.feup.cmov.cinema.commonModels.Session;
 import pt.feup.cmov.cinema.dataStorage.CinemaUpdater;
 import pt.feup.cmov.cinema.dataStorage.DBDataSource;
 import pt.feup.cmov.cinema.dataStorage.DBHelper;
@@ -221,7 +220,7 @@ public class MenuMain extends Activity {
 				}
 			});
 
-			if (moviesUpdateInProgress) {
+			if (reservationsUpdateInProgress) {
 				RelativeLayout reservationsSpiner = (RelativeLayout) reservationsView
 						.findViewById(R.id.reservations_progressBar);
 				try {

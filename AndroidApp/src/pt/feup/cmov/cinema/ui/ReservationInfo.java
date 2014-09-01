@@ -1,10 +1,6 @@
 package pt.feup.cmov.cinema.ui;
 
 import pt.feup.cmov.cinema.R;
-import pt.feup.cmov.cinema.R.id;
-import pt.feup.cmov.cinema.R.layout;
-import pt.feup.cmov.cinema.R.menu;
-import pt.feup.cmov.cinema.commonModels.Movie;
 import pt.feup.cmov.cinema.commonModels.Reservation;
 import pt.feup.cmov.cinema.dataStorage.DBDataSource;
 import android.app.ActionBar;
