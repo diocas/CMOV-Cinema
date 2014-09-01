@@ -122,6 +122,7 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
         
         return em.createNamedQuery("Reservation.findByUser")
             .setParameter("idUser", user)
+            .setParameter("date", new Date())
             .getResultList();
     }
 
@@ -136,6 +137,7 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
         return em.createNamedQuery("Reservation.findByUserAndUpdateDate")
             .setParameter("idUser", user)
             .setParameter("updateDate", df.parse(date))
+            .setParameter("date", new Date())
             .getResultList();
     }
     

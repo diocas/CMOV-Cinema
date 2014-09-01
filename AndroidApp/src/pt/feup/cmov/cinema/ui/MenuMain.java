@@ -32,8 +32,9 @@ import android.widget.Toast;
 
 public class MenuMain extends Activity {
 
-	private SimpleCursorAdapter moviesAdapter;
-	private SimpleCursorAdapter reservationsAdapter;
+	public static SimpleCursorAdapter moviesAdapter;
+	public static SimpleCursorAdapter reservationsAdapter;
+	
 	private DBDataSource dataSource;
 	private CinemaUpdater cinemaUpdater;
 

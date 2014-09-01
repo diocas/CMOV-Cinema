@@ -44,11 +44,14 @@ public class DBDataSource {
 	public void cleanOld() {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 		Date now = new Date();
-		database.delete(DBHelper.TABLE_MOVIE, DBHelper.MOVIE_DATE_UNTIL + " < "
-				+ sdfDate.format(now).toString(), null);
-		database.delete(DBHelper.TABLE_RESERVATION,
-				DBHelper.RESERVATION_UPDATE_DATE + " < "
-						+ sdfDate.format(now).toString(), null);
+		
+		database.execSQL("DELETE FROM " + DBHelper.TABLE_MOVIE
+				+ " WHERE " + DBHelper.MOVIE_DATE_UNTIL + " < Datetime('"
+				+ sdfDate.format(now) + "')");
+		
+		database.execSQL("DELETE FROM " + DBHelper.TABLE_RESERVATION
+				+ " WHERE " + DBHelper.RESERVATION_DATE + " < Datetime('"
+				+ sdfDate.format(now) + "')");
 	}
 
 	public void cleanAll() {
@@ -60,10 +63,10 @@ public class DBDataSource {
 
 	public List<Movie> getAllMovie() {
 		List<Movie> movies = new ArrayList<Movie>();
-	
+
 		Cursor cursor = database.query(DBHelper.TABLE_MOVIE, allColumnsMovie,
 				null, null, null, null, null);
-	
+
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Movie movie = cursorToMovie(cursor);
@@ -80,13 +83,13 @@ public class DBDataSource {
 	}
 
 	public Movie getMovie(long id) {
-	
+
 		Cursor cursor = database.query(DBHelper.TABLE_MOVIE, allColumnsMovie,
 				DBHelper.MOVIE_ID + "=?", new String[] { String.valueOf(id) },
 				null, null, null);
-	
+
 		cursor.moveToFirst();
-	
+
 		if (!cursor.isAfterLast()) {
 			return cursorToMovie(cursor);
 		} else {
@@ -150,7 +153,7 @@ public class DBDataSource {
 		movie.setSinopsis(cursor.getString(3));
 		movie.setCover(cursor.getString(4));
 		movie.setTrailer(cursor.getString(5));
-	
+
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			movie.setDateFrom(df.parse(cursor.getString(6)));
@@ -164,16 +167,16 @@ public class DBDataSource {
 			movie.setUpdateDate(df.parse(cursor.getString(8)));
 		} catch (ParseException e) {
 		}
-	
+
 		return movie;
 	}
-	
+
 	public List<Reservation> getAllReservation() {
 		List<Reservation> reservations = new ArrayList<Reservation>();
-	
-		Cursor cursor = database.query(DBHelper.TABLE_RESERVATION, allColumnsReservation,
-				null, null, null, null, null);
-	
+
+		Cursor cursor = database.query(DBHelper.TABLE_RESERVATION,
+				allColumnsReservation, null, null, null, null, null);
+
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Reservation reservation = cursorToReservation(cursor);
@@ -240,13 +243,13 @@ public class DBDataSource {
 
 		return reservation;
 	}
-	
+
 	public List<Session> getAllSession() {
 		List<Session> sessions = new ArrayList<Session>();
-	
-		Cursor cursor = database.query(DBHelper.TABLE_SESSION, allColumnsSession,
-				null, null, null, null, null);
-	
+
+		Cursor cursor = database.query(DBHelper.TABLE_SESSION,
+				allColumnsSession, null, null, null, null, null);
+
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Session session = cursorToSession(cursor);
@@ -259,9 +262,9 @@ public class DBDataSource {
 
 	public List<Session> getSessionByMovie(long id) {
 		List<Session> sessions = new ArrayList<Session>();
-		
+
 		Cursor cursor = getSessionByMovieCursor(id);
-	
+
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Session session = cursorToSession(cursor);
@@ -273,11 +276,11 @@ public class DBDataSource {
 	}
 
 	public Cursor getSessionByMovieCursor(long id) {
-		return database.query(DBHelper.TABLE_SESSION,
-				allColumnsSession, DBHelper.SESSION_MOVIE_ID + "=?",
+		return database.query(DBHelper.TABLE_SESSION, allColumnsSession,
+				DBHelper.SESSION_MOVIE_ID + "=?",
 				new String[] { String.valueOf(id) }, null, null, null);
 	}
-	
+
 	public Session getSession(long id) {
 
 		Cursor cursor = database.query(DBHelper.TABLE_SESSION,
@@ -292,30 +295,30 @@ public class DBDataSource {
 			return null;
 		}
 	}
-	
+
 	public void insertSession(Session session) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.SESSION_ID, session.getIdSession());
 		values.put(DBHelper.SESSION_MOVIE_ID, session.getIdMovie().getIdMovie());
 		values.put(DBHelper.SESSION_ROOM, session.getRoom());
-		
+
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		values.put(DBHelper.SESSION_TIME, df.format(session.getTime()));
-		
+
 		database.insertOrThrow(DBHelper.TABLE_SESSION, null, values);
 	}
-	
-	public void deleteSession (Session session) {
+
+	public void deleteSession(Session session) {
 		long id = session.getIdSession();
-		database.delete(DBHelper.TABLE_SESSION, DBHelper.SESSION_ID
-				+ " = " + id, null);
+		database.delete(DBHelper.TABLE_SESSION, DBHelper.SESSION_ID + " = "
+				+ id, null);
 	}
 
 	public void cleanAllSessions() {
 		database.delete(DBHelper.TABLE_SESSION, null, null);
 	}
-	
-	private Session cursorToSession (Cursor cursor) {
+
+	private Session cursorToSession(Cursor cursor) {
 		Session session = new Session();
 
 		session.setIdSession((int) cursor.getLong(0));
@@ -327,7 +330,7 @@ public class DBDataSource {
 			session.setTime(df.parse(cursor.getString(2)));
 		} catch (ParseException e) {
 		}
-		
+
 		return session;
 	}
 

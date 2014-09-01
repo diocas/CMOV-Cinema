@@ -30,6 +30,8 @@
     <string name="column_left">Left</string>
     <string name="column_center">Center</string>
     <string name="column_right">Right</string>
-    <string name="finish_reservation">Finish</string>
+    <string name="get_seats">Get seats</string>
+    <string name="finish_reservation">Get reservation</string>
+    <string name="error_finish_reservation">Could not finish reservation</string>
 
 </resources>

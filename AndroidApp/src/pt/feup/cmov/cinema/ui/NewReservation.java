@@ -59,18 +59,19 @@ public class NewReservation extends Activity {
 	private int totalSeats;
 
 	private GridLayout placesGrid;
-	private LinearLayout finishProcess;
+	private LinearLayout SpecifySeatsBlock;
+	private LinearLayout FinishReservationBlock;
 	private ProgressBar placesLoader;
 	private SeekBar nPlacesChooser;
-	private TextView placesChosen;
-	private Button finishReservation;
+	private TextView specifyNSeats;
+	private TextView seatsGiven;
+	private Button getSeatsButton;
+	private Button finishReservationButton;
 
 	private List<String> availablePlaces;
 	private List<Map<String, String>> places;
-	
-	private String placeChosen;
+
 	Reservation currentReservation;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,8 @@ public class NewReservation extends Activity {
 		session = dataSource.getSession(b.getLong("id"));
 		context = this;
 		currentReservation = new Reservation();
-		currentReservation.setIdUser(new Useracount(Integer.decode(Preferences.getUserId())));
+		currentReservation.setIdUser(new Useracount(Integer.decode(Preferences
+				.getUserId())));
 		currentReservation.setIdSession(session);
 
 		places = new ArrayList<Map<String, String>>();
@@ -122,7 +124,7 @@ public class NewReservation extends Activity {
 				.findViewById(R.id.new_reservation_time);
 		dateEditText = (EditText) this.findViewById(R.id.new_reservation_date);
 		dateEditText.setInputType(InputType.TYPE_NULL);
-		
+
 		dateEditText.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -136,12 +138,20 @@ public class NewReservation extends Activity {
 		placesLoader = (ProgressBar) this.findViewById(R.id.places_loader);
 		placesLoader.setVisibility(View.GONE);
 		placesLoader = (ProgressBar) this.findViewById(R.id.places_loader);
-		finishProcess = (LinearLayout) this.findViewById(R.id.finish_process);
-		finishProcess.setVisibility(View.GONE);
+		SpecifySeatsBlock = (LinearLayout) this
+				.findViewById(R.id.specify_seats_block);
+		SpecifySeatsBlock.setVisibility(View.GONE);
+		FinishReservationBlock = (LinearLayout) this
+				.findViewById(R.id.finish_reservation_block);
+		FinishReservationBlock.setVisibility(View.GONE);
 		nPlacesChooser = (SeekBar) this.findViewById(R.id.n_places_chooser);
-		placesChosen = (TextView) this.findViewById(R.id.places_chosen);
-		finishReservation = (Button) this.findViewById(R.id.finish_reservation);
-		finishReservation.setOnClickListener(new FinishButtonOnClickListener());
+		specifyNSeats = (TextView) this.findViewById(R.id.specify_n_seats);
+		seatsGiven = (TextView) this.findViewById(R.id.seats_given);
+		getSeatsButton = (Button) this.findViewById(R.id.get_seats);
+		finishReservationButton = (Button) this
+				.findViewById(R.id.finish_reservation_button);
+		finishReservationButton
+				.setOnClickListener(new FinishReservationButtonOnClickListener());
 
 		movie_name.setText("Name: " + session.getIdMovie().getName());
 		movie_time.setText("Time: " + session.getTime() + " \nDe: "
@@ -206,7 +216,8 @@ public class NewReservation extends Activity {
 			}
 
 			if (currentReservation.getDate() != null
-					&& session.getIdMovie().getDateFrom().compareTo(currentReservation.getDate()) <= 0
+					&& session.getIdMovie().getDateFrom()
+							.compareTo(currentReservation.getDate()) <= 0
 					&& session.getIdMovie().getDateUntil()
 							.compareTo(currentReservation.getDate()) >= 0
 					&& (year != selectedYear || month != selectedMonth || day != selectedDay)) {
@@ -230,7 +241,8 @@ public class NewReservation extends Activity {
 	private void hasSeats() {
 
 		placesLoader.setVisibility(View.VISIBLE);
-		finishProcess.setVisibility(View.GONE);
+		SpecifySeatsBlock.setVisibility(View.GONE);
+		FinishReservationBlock.setVisibility(View.GONE);
 
 		ServerConnection<String> serverConnection = new ServerConnection<String>(
 				new ServerResultHandler<String>() {
@@ -303,84 +315,169 @@ public class NewReservation extends Activity {
 	public class PlaceButtonOnClickListener implements OnClickListener {
 
 		int availableSeats;
+		String place;
 
 		public PlaceButtonOnClickListener(int availableSeats, String place) {
 			this.availableSeats = availableSeats;
-			placeChosen = place;
+			this.place = place;
+
 		}
 
 		@Override
 		public void onClick(View v) {
-			finishProcess.setVisibility(View.VISIBLE);
+			SpecifySeatsBlock.setVisibility(View.VISIBLE);
+			FinishReservationBlock.setVisibility(View.GONE);
+			getSeatsButton
+					.setOnClickListener(new GetSeatsButtonOnClickListener(place));
 			nPlacesChooser.setMax(availableSeats + 1);
-			nPlacesChooser.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					
-				}
-				
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-				}
-				
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromUser) {
-					chooseSeats(progress);
-				}
-			});
+			nPlacesChooser
+					.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+						@Override
+						public void onStopTrackingTouch(SeekBar seekBar) {
+
+						}
+
+						@Override
+						public void onStartTrackingTouch(SeekBar seekBar) {
+						}
+
+						@Override
+						public void onProgressChanged(SeekBar seekBar,
+								int progress, boolean fromUser) {
+
+							specifyNSeats.setText(String.valueOf(progress));
+						}
+					});
 			nPlacesChooser.setProgress(1);
-			
-			
+
 		}
 
 	};
-	
-	public class FinishButtonOnClickListener implements OnClickListener {
 
+	public class GetSeatsButtonOnClickListener implements OnClickListener {
 
-		public FinishButtonOnClickListener() {
+		String place;
+
+		public GetSeatsButtonOnClickListener(String place) {
+			this.place = place;
 		}
 
 		@Override
 		public void onClick(View v) {
-			
+
+			FinishReservationBlock.setVisibility(View.GONE);
+			ServerConnection<List<String>> serverConnectionReservations = new ServerConnection<List<String>>(
+					new ServerResultHandler<List<String>>() {
+
+						@Override
+						public void onServerResultSucess(List<String> response,
+								int httpStatusCode) {
+
+							chooseSeats(nPlacesChooser.getProgress(), response);
+							FinishReservationBlock.setVisibility(View.VISIBLE);
+						}
+
+						@Override
+						public void onServerResultFailure(Exception exception) {
+							Toast.makeText(context, R.string.no_seats,
+									Toast.LENGTH_SHORT).show();
+						}
+					}, new TypeToken<List<String>>() {
+					}.getType());
+
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+			serverConnectionReservations.execute(new ServerAction(
+					ServerActions.SessionGetAvailableSeats, String
+							.valueOf(session.getIdSession()), df
+							.format(currentReservation.getDate()), place));
+		}
+
+	};
+
+	public class FinishReservationButtonOnClickListener implements
+			OnClickListener {
+
+		@Override
+		public void onClick(View v) {
 			currentReservation.setUpdateDate(new Date());
-		
+
 			ServerConnection<String> serverConnectionReservations = new ServerConnection<String>(
 					new ServerResultHandler<String>() {
 
 						@Override
-						public void onServerResultSucess(
-								String response, int httpStatusCode) {
-							
-							currentReservation.setIdReservation(Integer.parseInt(response));
+						public void onServerResultSucess(String response,
+								int httpStatusCode) {
+
+							currentReservation.setIdReservation(Integer
+									.parseInt(response));
 							dataSource.insertReservation(currentReservation);
+							MenuMain.reservationsAdapter.changeCursor(dataSource.getReservationsCursor());
 							finish();
 						}
 
 						@Override
 						public void onServerResultFailure(Exception exception) {
-							System.out.println("falhou!!");
+							Toast.makeText(context, R.string.error_finish_reservation,
+									Toast.LENGTH_SHORT).show();
 						}
 					}, new TypeToken<String>() {
 					}.getType());
 
-			
 			serverConnectionReservations.execute(new ServerAction(
 					ServerActions.ReservationPost, currentReservation));
-
-
-			
 		}
 
-	};
-	
-	private void chooseSeats(int nSeats) {
-		String seats = "A1,A2";
+	}
+
+	private void chooseSeats(int nSeats, List<String> available) {
+
+		HashMap<String, ArrayList<String>> rows = new HashMap<String, ArrayList<String>>();
+		String seats = "";
+
+		for (String seat : available) {
+
+			if (!rows.containsKey(seat.substring(0, 1))) {
+				rows.put(seat.substring(0, 1), new ArrayList<String>());
+			}
+			rows.get(seat.substring(0, 1)).add(seat);
+		}
+
+		boolean hasSufficient = false;
+
+		for (String key : rows.keySet()) {
+			if (rows.get(key).size() >= nSeats) {
+				for (int i = 0; i < nSeats; i++) {
+					seats += rows.get(key).get(i);
+					if (i < nSeats - 1) {
+						seats += ",";
+					}
+				}
+				hasSufficient = true;
+				break;
+			}
+
+		}
+
+		if (!hasSufficient) {
+			for (String key : rows.keySet()) {
+				for (String seat : rows.get(key)) {
+					if (nSeats > 0) {
+						seats += seat;
+						if (nSeats > 1) {
+							seats += ",";
+						}
+						nSeats--;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+
+		seatsGiven.setText(seats);
 		currentReservation.setPlaces(seats);
-		placesChosen.setText(String.valueOf(seats));
 	}
 
 	@Override
