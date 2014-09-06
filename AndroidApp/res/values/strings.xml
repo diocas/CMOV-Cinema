@@ -30,8 +30,19 @@
     <string name="column_left">Left</string>
     <string name="column_center">Center</string>
     <string name="column_right">Right</string>
-    <string name="get_seats">Get seats</string>
+    <string name="get_seats_1">Get</string>
+    <string name="get_seats_2">seat(s)</string>
     <string name="finish_reservation">Get reservation</string>
     <string name="error_finish_reservation">Could not finish reservation</string>
+    <string name="movie_sessions_title">Available sessions</string>
+    <string name="movie_sinopsis_title">Sinopsis</string>
+    <string name="new_reservation_date_title">Choose date</string>
+    <string name="new_reservation_places_title">Choose place</string>
+    <string name="specify_seats_block_title">How many seats?</string>
+    <string name="finish_reservation_block_title">Seats given</string>
+    <string name="reservation_info_title">Reservation</string>
+    <string name="reservation_places_title">Reserved seats</string>
+    <string name="reservation_button_delete">Remove reservation</string>
+    <string name="error_delete_reservation">Error removing reservation</string>
 
 </resources>

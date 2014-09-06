@@ -9,12 +9,17 @@ import java.util.List;
 import pt.feup.cmov.cinema.commonModels.Movie;
 import pt.feup.cmov.cinema.commonModels.Reservation;
 import pt.feup.cmov.cinema.commonModels.Session;
+import pt.feup.cmov.cinema.utils.MovieImages;
+import pt.feup.cmov.cinema.utils.DownloadImages;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DBDataSource {
+
+	Context context;
+	DownloadImages downloader;
 
 	private SQLiteDatabase database;
 	private DBHelper dbHelper;
@@ -31,6 +36,8 @@ public class DBDataSource {
 			DBHelper.RESERVATION_DATE, DBHelper.RESERVATION_UPDATE_DATE };
 
 	public DBDataSource(Context context) {
+		this.context = context;
+		downloader = new DownloadImages(context);
 		dbHelper = new DBHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
@@ -42,11 +49,24 @@ public class DBDataSource {
 	public void cleanOld() {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 		Date now = new Date();
+
+		Cursor cursor = database.query(DBHelper.TABLE_MOVIE,
+				allColumnsMovie,
+				DBHelper.MOVIE_DATE_UNTIL + " < Datetime(?)",
+				new String[] { sdfDate.format(now) }, null, null, null);
 		
-		database.execSQL("DELETE FROM " + DBHelper.TABLE_MOVIE
-				+ " WHERE " + DBHelper.MOVIE_DATE_UNTIL + " < Datetime('"
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Movie movie = cursorToMovie(cursor);
+			MovieImages.removeImage(context, movie.getIdMovie());
+			cursor.moveToNext();
+		}
+		cursor.close();
+
+		database.execSQL("DELETE FROM " + DBHelper.TABLE_MOVIE + " WHERE "
+				+ DBHelper.MOVIE_DATE_UNTIL + " < Datetime('"
 				+ sdfDate.format(now) + "')");
-		
+
 		database.execSQL("DELETE FROM " + DBHelper.TABLE_RESERVATION
 				+ " WHERE " + DBHelper.RESERVATION_DATE + " < Datetime('"
 				+ sdfDate.format(now) + "')");
@@ -114,13 +134,26 @@ public class DBDataSource {
 		cursor.moveToFirst();
 		Movie movie = cursorToMovie(cursor);
 		cursor.close();
+
+		if (movie.getCover() != null && movie.getCover().length() > 10) {
+			downloader.execute(movie.getCover(), movie.getIdMovie().toString());
+		}
+
 		return movie;
 	}
 
 	public void insertMovie(Movie movie) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.MOVIE_ID, movie.getIdMovie());
-		values.put(DBHelper.MOVIE_COVER, movie.getCover());
+
+		if (movie.getCover() != null) {
+			try {
+				String[] parts = movie.getCover().split("/");
+				String cover = parts[parts.length - 1];
+				values.put(DBHelper.MOVIE_COVER, cover);
+			} catch (Exception e) {
+			}
+		}
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		values.put(DBHelper.MOVIE_DATE_FROM, df.format(movie.getDateFrom()));
 		values.put(DBHelper.MOVIE_DATE_UNTIL, df.format(movie.getDateUntil()));
@@ -131,15 +164,25 @@ public class DBDataSource {
 		values.put(DBHelper.MOVIE_UPDATE_DATE, df.format(movie.getUpdateDate()));
 
 		database.insertOrThrow(DBHelper.TABLE_MOVIE, null, values);
+
+		if (movie.getCover() != null && movie.getCover().length() > 10) {
+			downloader.execute(movie.getCover(), movie.getIdMovie().toString());
+		}
 	}
 
 	public void deleteMovie(Movie movie) {
 		long id = movie.getIdMovie();
 		database.delete(DBHelper.TABLE_MOVIE, DBHelper.MOVIE_ID + " = " + id,
 				null);
+		MovieImages.removeImage(context, movie.getIdMovie());
 	}
 
 	public void cleanAllMovies() {
+
+		for (Movie movie : getAllMovie()) {
+			MovieImages.removeImage(context, movie.getIdMovie());
+		}
+
 		database.delete(DBHelper.TABLE_MOVIE, null, null);
 	}
 
@@ -187,7 +230,7 @@ public class DBDataSource {
 
 	public Cursor getReservationsCursor() {
 		return database.query(DBHelper.TABLE_RESERVATION,
-				allColumnsReservation, null, null, null, null, null);
+				allColumnsReservation, null, null, null, null, DBHelper.RESERVATION_DATE);
 	}
 
 	public Reservation getReservation(long id) {

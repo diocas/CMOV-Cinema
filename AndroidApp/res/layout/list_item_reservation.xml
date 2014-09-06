@@ -2,17 +2,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="6dip" >
+    android:background="@drawable/list_row_selector"
+    android:padding="8dp" >
 
-<TextView
-    android:id="@+id/reservation_name"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:text="Large Text"
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+	<ImageView
+        android:id="@+id/movie_info_img"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dp" />
+ 
+    <TextView
+        android:id="@+id/movie_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/movie_info_img"
+        android:layout_toRightOf="@+id/movie_info_img"
+        android:textSize="@dimen/title"
+        android:textStyle="bold" />
+ 
+    <TextView
+        android:id="@+id/reservation_date"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/movie_name"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/movie_info_img"
+        android:textSize="@dimen/rating" />
+    
+    <TextView
+        android:id="@+id/reservation_hour"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reservation_date"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/movie_info_img"
+        android:textSize="@dimen/rating" />
     
 
 </RelativeLayout>

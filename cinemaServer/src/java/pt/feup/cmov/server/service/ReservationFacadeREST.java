@@ -109,8 +109,9 @@ public class ReservationFacadeREST extends AbstractFacade<Reservation> {
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public String remove(@PathParam("id") Integer id) {
         super.remove(super.find(id));
+        return "ok";
     }
 
     @GET

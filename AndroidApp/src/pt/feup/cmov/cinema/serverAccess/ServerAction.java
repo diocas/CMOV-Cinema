@@ -5,11 +5,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
@@ -84,7 +87,8 @@ public class ServerAction<T> {
 		}
 		if (actionString.contains("Delete"))
 		{
-			return new HttpGet(requestURL);
+
+			return new HttpDelete(requestURL);
 		}
 		throw new Exception("Unresolved HttpEntityEnclosingRequest");
 	}

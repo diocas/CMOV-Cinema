@@ -14,6 +14,7 @@ import pt.feup.cmov.cinema.serverAccess.ServerResultHandler;
 import pt.feup.cmov.cinema.ui.MenuMain;
 import android.database.sqlite.SQLiteConstraintException;
 import android.widget.Toast;
+import pt.feup.cmov.cinema.utils.*;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -141,8 +142,8 @@ public class CinemaUpdater {
 
 						}
 						context.finishUpdateReservationData();
-						
-						if(!moviesUpdateFailed) {
+
+						if (!moviesUpdateFailed) {
 							Preferences.updateLastUpdateDate();
 						}
 					}
@@ -158,9 +159,11 @@ public class CinemaUpdater {
 				}, new TypeToken<List<Reservation>>() {
 				}.getType());
 
-		serverConnectionReservations.execute(new ServerAction<ArrayList<Reservation>>(
-				ServerActions.ReservationGetByUserUpdateDate, Preferences
-						.getUserId(), Preferences.getLastUpdateDate()));
+		serverConnectionReservations
+				.execute(new ServerAction<ArrayList<Reservation>>(
+						ServerActions.ReservationGetByUserUpdateDate,
+						Preferences.getUserId(), Preferences
+								.getLastUpdateDate()));
 
 	}
 
