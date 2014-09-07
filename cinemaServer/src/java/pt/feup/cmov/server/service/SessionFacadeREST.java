@@ -123,6 +123,32 @@ public class SessionFacadeREST extends AbstractFacade<Session> {
     }
 
     @GET
+    @Path("seats/{id}/{date}")
+    @Produces({"application/json"})
+    public String occupiedSeats(@PathParam("id") Integer id, @PathParam("date") String date) throws ParseException {
+
+        Session session = em.find(Session.class, id);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        
+        
+        if(session == null)
+            return "Not valid";
+        
+        List<String> completeReservations = new ArrayList<String>();
+        
+        List<String> reservations = em.createNamedQuery("Reservation.occupiedSeats")
+            .setParameter("idSession", session)
+            .setParameter("date", df.parse(date))
+            .getResultList();
+        
+        for(String reservation : reservations) {
+            completeReservations.addAll(Arrays.asList(reservation.split(",")));
+        }
+        
+        return new GsonBuilder().create().toJson(completeReservations);
+    }
+
+    @GET
     @Path("seats/{id}/{date}/{location}")
     @Produces({"application/json"})
     public String freeSeats(@PathParam("id") Integer id, @PathParam("date") String date, @PathParam("location") Location location) throws ParseException {

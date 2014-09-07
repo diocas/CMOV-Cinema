@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -51,13 +52,13 @@ import com.google.gson.reflect.TypeToken;
 public class NewReservation extends Activity {
 
 	static final int MAX_SEATS = 6;
+	static final int DATE_PICKER_ID = 1111;
 
 	private DBDataSource dataSource;
 	private Session session;
 	private EditText dateEditText;
 	private Context context;
 
-	static final int DATE_PICKER_ID = 1111;
 	private String chosenDateString;
 	private int year = 0;
 	private int month = 0;
@@ -73,6 +74,7 @@ public class NewReservation extends Activity {
 	private TextView seatsGiven;
 	private Button getSeatsButton;
 	private Button finishReservationButton;
+	private Button showCinemaPlant;
 
 	private List<String> availablePlaces;
 	private List<Map<String, String>> places;
@@ -149,6 +151,11 @@ public class NewReservation extends Activity {
 				.findViewById(R.id.reservation_time);
 		reservation_time.setText(dfh.format(session.getTime()));
 
+		// ////////////////////////////////
+		TextView reservation_room = (TextView) this
+				.findViewById(R.id.reservation_room);
+		reservation_room.setText("Room: "+session.getRoom());
+
 		dateEditText = (EditText) this.findViewById(R.id.new_reservation_date);
 		dateEditText.setInputType(InputType.TYPE_NULL);
 
@@ -179,6 +186,8 @@ public class NewReservation extends Activity {
 				.findViewById(R.id.finish_reservation_button);
 		finishReservationButton
 				.setOnClickListener(new FinishReservationButtonOnClickListener());
+		showCinemaPlant = (Button) this
+				.findViewById(R.id.show_seats_map_button);
 
 	}
 
@@ -335,9 +344,11 @@ public class NewReservation extends Activity {
 					"textButton")))
 					+ " (" + availablePlaces.get(i) + ")");
 
+			if (Integer.parseInt(availablePlaces.get(i)) > 0) {
 			button.setOnClickListener(new PlaceButtonOnClickListener(Integer
 					.parseInt(availablePlaces.get(i)), places.get(i).get(
 					"place")));
+			}
 
 		}
 	}
@@ -359,7 +370,7 @@ public class NewReservation extends Activity {
 			FinishReservationBlock.setVisibility(View.GONE);
 			getSeatsButton
 					.setOnClickListener(new GetSeatsButtonOnClickListener(place));
-			nPlacesChooser.setMax(Math.min(availableSeats + 1, MAX_SEATS));
+			nPlacesChooser.setMax(Math.min(availableSeats, MAX_SEATS));
 			nPlacesChooser
 					.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -520,7 +531,26 @@ public class NewReservation extends Activity {
 
 		seatsGiven.setText(seats);
 		currentReservation.setPlaces(seats);
+		
+		showCinemaPlant
+		.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(),
+						ShowPlant.class);
+				Bundle b = new Bundle();
+				b.putString("chosenPlaces", currentReservation.getPlaces());
+				b.putString("idSession", currentReservation.getIdSession().getIdSession().toString());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				b.putString("date", df.format(currentReservation.getDate()));
+				intent.putExtras(b);
+				startActivity(intent);
+			}
+			
+		});
 	}
+	
 
 	@Override
 	protected void onDestroy() {

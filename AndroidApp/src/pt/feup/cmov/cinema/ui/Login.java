@@ -28,6 +28,7 @@ public class Login extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		
 		new Preferences(this);
 
 		if (Preferences.getUserId() != "-1") {

@@ -13,6 +13,7 @@ public enum ServerActions
 	SessionGetAvailableSeats,
 	SessionGetAvailableSeatsCount,
 	SessionGetAvailableSeatsCountList,
+	SessionGetUnavailableSeatsList,
 	SessionGetTotalSeatsCount,
 	UserGetAccount,
 	UserPost,
@@ -51,6 +52,8 @@ public enum ServerActions
 			return "sessions/seats/%s/%s/%s/count";
 		case SessionGetAvailableSeatsCountList:
 			return "sessions/seats/%s/%s/list/count";
+		case SessionGetUnavailableSeatsList:
+			return "sessions/seats/%s/%s";
 		case SessionGetTotalSeatsCount:
 			return "sessions/seats/%s/%s/count";
 		case UserGetAccount:

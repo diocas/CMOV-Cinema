@@ -44,5 +44,7 @@
     <string name="reservation_places_title">Reserved seats</string>
     <string name="reservation_button_delete">Remove reservation</string>
     <string name="error_delete_reservation">Error removing reservation</string>
+    <string name="title_activity_teste">Teste</string>
+    <string name="show_seats_map_button">Locate seats</string>
 
 </resources>

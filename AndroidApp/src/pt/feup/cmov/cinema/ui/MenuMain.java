@@ -127,7 +127,7 @@ public class MenuMain extends Activity {
 			}
 
 		});
-
+		
 		String[] columnsReservations = new String[] { DBHelper.RESERVATION_ID,
 				DBHelper.RESERVATION_ID, DBHelper.RESERVATION_DATE,
 				DBHelper.RESERVATION_ID };

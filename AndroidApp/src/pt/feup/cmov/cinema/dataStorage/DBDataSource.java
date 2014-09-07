@@ -3,6 +3,7 @@ package pt.feup.cmov.cinema.dataStorage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,12 +49,14 @@ public class DBDataSource {
 
 	public void cleanOld() {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-		Date now = new Date();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
 
 		Cursor cursor = database.query(DBHelper.TABLE_MOVIE,
 				allColumnsMovie,
 				DBHelper.MOVIE_DATE_UNTIL + " < Datetime(?)",
-				new String[] { sdfDate.format(now) }, null, null, null);
+				new String[] { sdfDate.format(cal.getTime()) }, null, null, null);
 		
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -65,11 +68,11 @@ public class DBDataSource {
 
 		database.execSQL("DELETE FROM " + DBHelper.TABLE_MOVIE + " WHERE "
 				+ DBHelper.MOVIE_DATE_UNTIL + " < Datetime('"
-				+ sdfDate.format(now) + "')");
+				+ sdfDate.format(cal.getTime()) + "')");
 
 		database.execSQL("DELETE FROM " + DBHelper.TABLE_RESERVATION
 				+ " WHERE " + DBHelper.RESERVATION_DATE + " < Datetime('"
-				+ sdfDate.format(now) + "')");
+				+ sdfDate.format(cal.getTime()) + "')");
 	}
 
 	public void cleanAll() {

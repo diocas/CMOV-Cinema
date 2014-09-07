@@ -70,6 +70,16 @@
                     android:layout_toRightOf="@+id/movie_cover"
                     android:text="session time"
                     android:textSize="@dimen/rating" />
+
+                <TextView
+                    android:id="@+id/reservation_room"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/reservation_time"
+                    android:layout_marginTop="1dip"
+                    android:layout_toRightOf="@+id/movie_cover"
+                    android:text="session room"
+                    android:textSize="@dimen/rating" />
             </RelativeLayout>
 
             <LinearLayout
@@ -242,6 +252,12 @@
                     android:id="@+id/seats_given"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/show_seats_map_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/show_seats_map_button" />
 
                 <Button
                     android:id="@+id/finish_reservation_button"

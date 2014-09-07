@@ -30,6 +30,7 @@ public class ReservationInfo extends Activity {
 
 	DBDataSource dataSource;
 	Reservation reservation;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,35 +39,42 @@ public class ReservationInfo extends Activity {
 		dataSource = new DBDataSource(this);
 		reservation = dataSource.getReservation(b.getLong("id"));
 
-
 		ImageView movie_cover = (ImageView) this.findViewById(R.id.movie_cover);
 		try {
-			movie_cover.setImageBitmap(MovieImages
-					.getBitmap(this,reservation.getIdSession().getIdMovie().getIdMovie()));
+			movie_cover.setImageBitmap(MovieImages.getBitmap(this, reservation
+					.getIdSession().getIdMovie().getIdMovie()));
 		} catch (IOException e) {
 		}
 
 		TextView movie_name = (TextView) this.findViewById(R.id.movie_name);
 		movie_name.setText(reservation.getIdSession().getIdMovie().getName());
-		
-		TextView reservation_date = (TextView) this.findViewById(R.id.reservation_date);
+
+		TextView reservation_date = (TextView) this
+				.findViewById(R.id.reservation_date);
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM");
 		reservation_date.setText(df.format(reservation.getDate()));
-		
-		TextView reservation_time = (TextView) this.findViewById(R.id.reservation_time);
+
+		TextView reservation_time = (TextView) this
+				.findViewById(R.id.reservation_time);
 		SimpleDateFormat dft = new SimpleDateFormat("HH:mm");
-		reservation_time.setText(df.format(reservation.getIdSession().getTime()));
-		
-		TextView res_places = (TextView) this.findViewById(R.id.reservation_places);
+		reservation_time.setText(dft
+				.format(reservation.getIdSession().getTime()));
+
+		TextView reservation_room = (TextView) this
+				.findViewById(R.id.reservation_room);
+		reservation_room.setText("Room: "+reservation.getIdSession().getRoom());
+
+		TextView res_places = (TextView) this
+				.findViewById(R.id.reservation_places);
 		res_places.setText(reservation.getPlaces());
-		
-		Button reservation_button_delete = (Button) this.findViewById(R.id.reservation_button_delete);
+
+		Button reservation_button_delete = (Button) this
+				.findViewById(R.id.reservation_button_delete);
 		reservation_button_delete.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				
-				
+
 				ServerConnection<String> serverConnectionReservations = new ServerConnection<String>(
 						new ServerResultHandler<String>() {
 
@@ -77,7 +85,8 @@ public class ReservationInfo extends Activity {
 							}
 
 							@Override
-							public void onServerResultFailure(Exception exception) {
+							public void onServerResultFailure(
+									Exception exception) {
 								Toast.makeText(getBaseContext(),
 										R.string.error_delete_reservation,
 										Toast.LENGTH_SHORT).show();
@@ -86,43 +95,60 @@ public class ReservationInfo extends Activity {
 						}.getType());
 
 				serverConnectionReservations.execute(new ServerAction<String>(
-						ServerActions.ReservationDelete, reservation.getIdReservation().toString()));
-				
-				
-				
+						ServerActions.ReservationDelete, reservation
+								.getIdReservation().toString()));
+
 			}
 		});
+
+		Button showCinemaPlant = (Button) this
+				.findViewById(R.id.show_seats_map_button);
+		showCinemaPlant.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), ShowPlant.class);
+				Bundle b = new Bundle();
+				b.putString("chosenPlaces", reservation.getPlaces());
+				b.putString("idSession", reservation.getIdSession()
+						.getIdSession().toString());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				b.putString("date", df.format(reservation.getDate()));
+				intent.putExtras(b);
+				startActivity(intent);
+			}
+
+		});
 	}
-	
+
 	private void deleteReservationComplete() {
 
 		dataSource.deleteReservation(reservation);
-		
-		Intent intent=getIntent();
-		intent.putExtra("DELETE","ok");
-        setResult(RESULT_OK, intent);
-        finish();
+
+		Intent intent = getIntent();
+		intent.putExtra("DELETE", "ok");
+		setResult(RESULT_OK, intent);
+		finish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.reservation_info, menu);
 		ActionBar actionBar = getActionBar();
-	    actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-	    switch (item.getItemId()) 
-	    {
-	        case android.R.id.home:
-	            onBackPressed();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
