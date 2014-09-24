@@ -5,6 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+/**
+ * Sqlite database structure.
+ * @author diogo
+ *
+ */
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "cinemaDB";

@@ -2,6 +2,11 @@ package pt.feup.cmov.cinema.commonModels;
 
 import java.io.Serializable;
 
+/**
+ * Model of the user
+ * @author diogo
+ *
+ */
 public class Useracount implements Serializable {
     private static final long serialVersionUID = 1L;
    

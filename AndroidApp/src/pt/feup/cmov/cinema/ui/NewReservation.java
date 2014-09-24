@@ -49,6 +49,11 @@ import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Guide the user in the creation of a new reservation.
+ * @author diogo
+ *
+ */
 public class NewReservation extends Activity {
 
 	static final int MAX_SEATS = 6;
@@ -191,6 +196,9 @@ public class NewReservation extends Activity {
 
 	}
 
+	/******************************
+	 * Options menu
+	 ******************************/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.reservation_info, menu);
@@ -211,6 +219,10 @@ public class NewReservation extends Activity {
 		}
 	}
 
+	/******************************
+	 * 1st step: pick a date for reservation
+	 * (Date picker dialog and listener)
+	 ******************************/
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -274,6 +286,9 @@ public class NewReservation extends Activity {
 		}
 	};
 
+	/******************************
+	 * 2nd step: check if there are seats 
+	 ******************************/
 	@SuppressWarnings("unchecked")
 	private void hasSeats() {
 
@@ -310,6 +325,11 @@ public class NewReservation extends Activity {
 
 	}
 
+	/******************************
+	 * 3rd step: Choosing the location and the number of seats.
+	 * Each button must be created with the available seats.
+	 * The seats number slider should only allow the maximum available seats, at maximum of 6.
+	 ******************************/
 	@SuppressWarnings("unchecked")
 	private void chooseLocationAndSeats() {
 		ServerConnection<List<String>> serverConnection = new ServerConnection<List<String>>(
@@ -402,6 +422,10 @@ public class NewReservation extends Activity {
 
 	};
 
+	/******************************
+	 * 4th step: Allocating the user to seats.
+	 * The seats should be in the same row if possible.
+	 ******************************/
 	public class GetSeatsButtonOnClickListener implements OnClickListener {
 
 		String place;
@@ -446,6 +470,76 @@ public class NewReservation extends Activity {
 
 	};
 
+	private void chooseSeats(int nSeats, List<String> available) {
+	
+		HashMap<String, ArrayList<String>> rows = new HashMap<String, ArrayList<String>>();
+		String seats = "";
+	
+		for (String seat : available) {
+	
+			if (!rows.containsKey(seat.substring(0, 1))) {
+				rows.put(seat.substring(0, 1), new ArrayList<String>());
+			}
+			rows.get(seat.substring(0, 1)).add(seat);
+		}
+	
+		boolean hasSufficient = false;
+	
+		for (String key : rows.keySet()) {
+			if (rows.get(key).size() >= nSeats) {
+				for (int i = 0; i < nSeats; i++) {
+					seats += rows.get(key).get(i);
+					if (i < nSeats - 1) {
+						seats += ",";
+					}
+				}
+				hasSufficient = true;
+				break;
+			}
+	
+		}
+	
+		if (!hasSufficient) {
+			for (String key : rows.keySet()) {
+				for (String seat : rows.get(key)) {
+					if (nSeats > 0) {
+						seats += seat;
+						if (nSeats > 1) {
+							seats += ",";
+						}
+						nSeats--;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+	
+		seatsGiven.setText(seats);
+		currentReservation.setPlaces(seats);
+		
+		showCinemaPlant
+		.setOnClickListener(new OnClickListener() {
+	
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(),
+						ShowPlant.class);
+				Bundle b = new Bundle();
+				b.putString("chosenPlaces", currentReservation.getPlaces());
+				b.putString("idSession", currentReservation.getIdSession().getIdSession().toString());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				b.putString("date", df.format(currentReservation.getDate()));
+				intent.putExtras(b);
+				startActivity(intent);
+			}
+			
+		});
+	}
+
+	/******************************
+	 * 5th step: request the reservation to the server and update the reservations list.
+	 ******************************/
 	public class FinishReservationButtonOnClickListener implements
 			OnClickListener {
 
@@ -483,75 +577,10 @@ public class NewReservation extends Activity {
 		}
 
 	}
-
-	private void chooseSeats(int nSeats, List<String> available) {
-
-		HashMap<String, ArrayList<String>> rows = new HashMap<String, ArrayList<String>>();
-		String seats = "";
-
-		for (String seat : available) {
-
-			if (!rows.containsKey(seat.substring(0, 1))) {
-				rows.put(seat.substring(0, 1), new ArrayList<String>());
-			}
-			rows.get(seat.substring(0, 1)).add(seat);
-		}
-
-		boolean hasSufficient = false;
-
-		for (String key : rows.keySet()) {
-			if (rows.get(key).size() >= nSeats) {
-				for (int i = 0; i < nSeats; i++) {
-					seats += rows.get(key).get(i);
-					if (i < nSeats - 1) {
-						seats += ",";
-					}
-				}
-				hasSufficient = true;
-				break;
-			}
-
-		}
-
-		if (!hasSufficient) {
-			for (String key : rows.keySet()) {
-				for (String seat : rows.get(key)) {
-					if (nSeats > 0) {
-						seats += seat;
-						if (nSeats > 1) {
-							seats += ",";
-						}
-						nSeats--;
-					} else {
-						break;
-					}
-				}
-			}
-		}
-
-		seatsGiven.setText(seats);
-		currentReservation.setPlaces(seats);
-		
-		showCinemaPlant
-		.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(),
-						ShowPlant.class);
-				Bundle b = new Bundle();
-				b.putString("chosenPlaces", currentReservation.getPlaces());
-				b.putString("idSession", currentReservation.getIdSession().getIdSession().toString());
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-				b.putString("date", df.format(currentReservation.getDate()));
-				intent.putExtras(b);
-				startActivity(intent);
-			}
-			
-		});
-	}
 	
-
+	/**
+	 * On destroying the activity, free the database connection.
+	 */
 	@Override
 	protected void onDestroy() {
 		dataSource.close();

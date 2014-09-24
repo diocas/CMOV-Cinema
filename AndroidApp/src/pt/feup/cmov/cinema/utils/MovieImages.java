@@ -17,6 +17,13 @@ public class MovieImages {
 	private static String DEFAULT_IMG = "default_movie_img.jpg";
 	private static String IMG_PATH = "cover_";
 
+	/**
+	 * Get the cover of a movie
+	 * @param context 
+	 * @param idMovie
+	 * @return The image of the movie
+	 * @throws IOException
+	 */
 	public static Bitmap getBitmap(Context context, int  idMovie)
 			throws IOException {
 		
@@ -33,6 +40,13 @@ public class MovieImages {
 		}
 	}
 
+	/**
+	 * Store an image on the application
+	 * @param context
+	 * @param b
+	 * @param idMovie
+	 * @throws IOException
+	 */
 	public static void importImage(Context context, Bitmap b, int  idMovie) throws IOException {
 		FileOutputStream fos; 
 	    try { 
@@ -44,6 +58,11 @@ public class MovieImages {
 	    }
 	}
 
+	/**
+	 * Remove an image file from the application
+	 * @param context
+	 * @param idMovie
+	 */
 	public static void removeImage(Context context, int  idMovie) {
 		File dir = context.getFilesDir();
 		File file = new File(dir, IMG_PATH + idMovie);

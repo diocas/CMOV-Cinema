@@ -3,6 +3,11 @@ package pt.feup.cmov.cinema.commonModels;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Model of a session
+ * @author diogo
+ *
+ */
 public class Session implements Serializable {
     private static final long serialVersionUID = 1L;
    

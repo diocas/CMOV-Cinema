@@ -30,6 +30,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+/**
+ * Show the building plant with the given seats location to user. If internet
+ * connection is available, also shows the seats unavailable.
+ * 
+ * @author diogo
+ * 
+ */
+// Codigo adaptado da internet:
+// http://blahti.wordpress.com/2012/07/23/three-variations-of-image-squares/
 public class ShowPlant extends Activity {
 
 	final int numColsSeats = 32;
@@ -43,11 +52,12 @@ public class ShowPlant extends Activity {
 	private ImageAdapter mAdapter;
 	private int[] mImageIds = { R.drawable.chair, R.drawable.chair_chosen,
 			R.drawable.chair_unavailable };
-	
+
 	ProgressBar loadingProgressBar;
 
 	private List<String> unAvailablePlaces;
 	private List<String> chosenPlaces;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,26 +65,26 @@ public class ShowPlant extends Activity {
 		setContentView(R.layout.activity_show_plant);
 
 		this.setTitle("Plant");
-		
-		loadingProgressBar = (ProgressBar)findViewById(R.id.loading);
+
+		loadingProgressBar = (ProgressBar) findViewById(R.id.loading);
 
 		Bundle b = getIntent().getExtras();
 		String[] passedChosenPlaces = b.getString("chosenPlaces").split(",");
-
 
 		unAvailablePlaces = new ArrayList<String>();
 		chosenPlaces = new ArrayList<String>();
 		for (String place : passedChosenPlaces) {
 			chosenPlaces.add(place);
 		}
-		
+
+		//Get the unavailable seats
 		ServerConnection<List<String>> serverConnection = new ServerConnection<List<String>>(
 				new ServerResultHandler<List<String>>() {
 
 					@Override
 					public void onServerResultSucess(List<String> response,
 							int httpStatusCode) {
-						
+
 						unAvailablePlaces = response;
 						showPlaces();
 					}
@@ -87,17 +97,18 @@ public class ShowPlant extends Activity {
 				}.getType());
 
 		serverConnection.execute(new ServerAction<List<String>>(
-				ServerActions.SessionGetUnavailableSeatsList, b.getString("idSession"), b.getString("date")));
+				ServerActions.SessionGetUnavailableSeatsList, b
+						.getString("idSession"), b.getString("date")));
 
-		
 	}
-	
-	
-	
+
+	/**
+	 * Set the grid of seats
+	 */
 	private void showPlaces() {
-		
+
 		loadingProgressBar.setVisibility(View.GONE);
-		
+
 		View frame = (View) findViewById(R.id.CinemaSeatSGridWrapper);
 		mGridView = (GridView) findViewById(R.id.CinemaSeatSGrid);
 
@@ -116,13 +127,6 @@ public class ShowPlant extends Activity {
 				new ViewTreeObserver.OnGlobalLayoutListener() {
 					@Override
 					public void onGlobalLayout() {
-						// When we get here, the size of the frame view is
-						// known.
-						// Use those dimensions to set the width of the columns
-						// and the image adapter size.
-						// Log.d ("Image Squares", "Size of frame (on layout): "
-						// + mFrameView.getHeight () + " w: "+
-						// mFrameView.getWidth ());
 						if (mAdapter.getNumColumns() == 0) {
 							View f = mFrameView;
 							int fh = f.getHeight() - f.getPaddingTop()
@@ -135,68 +139,37 @@ public class ShowPlant extends Activity {
 							int usableWidth = shortestWidth - (0 + mNumColumns)
 									* mImageThumbSpacing - f.getPaddingLeft()
 									- f.getPaddingRight();
-							// usableWidth = shortestWidth;
 							usableWidth = shortestWidth - (0 + mNumColumns)
 									* mImageThumbSpacing;
 
 							int columnWidth = usableWidth / mNumColumns;
-							mImageThumbSize = columnWidth; // -
-															// mImageThumbSpacing;
+							mImageThumbSize = columnWidth;
 							int gridWidth = shortestWidth;
-
-							// The columnWidth used is an integer. That means
-							// that we usually end up with a
-							// little unused space. Fix that up with padding if
-							// the unused space is more than
-							// a half an image.
 							int estGridWidth = mNumColumns * columnWidth;
 							int unusedSpace = (shortestWidth - estGridWidth);
 							boolean addPadding = (unusedSpace * 2) > mImageThumbSize;
 							if (addPadding) {
-								// This is not a precise calculation. Pad with
-								// roughly 1/3 the unused space.
 								int pad = unusedSpace / 3;
 								if (pad > 0)
 									mGridView.setPadding(pad, pad, pad, pad);
-								// Log.d ("Image Squares", "Padding to center: "
-								// + pad);
 							}
 
-							// mGridView.setColumnWidth (mImageThumbSize);
 							mGridView.setColumnWidth(columnWidth);
 
-							// mGridView.setColumnWidth (shortestWidth /
-							// mNumColumns);
-							// LayoutParams lparams = new
-							// LinearLayout.LayoutParams (usableWidth,
-							// usableWidth);
-
-							// Now that we have made all the extra adjustments,
-							// resize the grid
-							// and have it redo its view one more time.
 							LayoutParams lparams = new LinearLayout.LayoutParams(
 									gridWidth, gridWidth);
 							mGridView.setLayoutParams(lparams);
-							// Log.d ("Image Squares", "Size of grid: " +
-							// mGridView.getHeight () + " w: "+
-							// mGridView.getWidth ());
 
 							mAdapter.setNumColumns(mNumColumns);
 							mAdapter.setItemHeight(mImageThumbSize);
-							// Log.d ("Image Squares", "Size of square: " +
-							// mImageThumbSize);
 						}
 					}
 				});
 	}
-	
-	
 
 	/**
-	 * The main adapter that backs the GridView. This is fairly standard except
-	 * that the image size is forced to a square.
+	 * The main adapter that backs the GridView.
 	 */
-
 	private class ImageAdapter extends BaseAdapter {
 
 		private final Context mContext;
@@ -232,8 +205,7 @@ public class ShowPlant extends Activity {
 
 		@Override
 		public long getItemId(int position) {
-			return position; // position < mNumColumns ? 0 : position -
-								// mNumColumns;
+			return position;
 		}
 
 		@Override
@@ -243,8 +215,9 @@ public class ShowPlant extends Activity {
 
 		/**
 		 * Create ImageView objects for the grid.
+		 * The image that shows depends if the position is one of the passed seats (defined in the chosenPlaces list),
+		 * if the seats are unavailable (defined in the unAvailablePlaces list, from the server) or if they are free.
 		 */
-
 		@Override
 		public View getView(int position, View convertView, ViewGroup container) {
 			// Now handle the main ImageView thumbnails
@@ -295,7 +268,7 @@ public class ShowPlant extends Activity {
 																			 * MATCH_PARENT
 																			 * ,
 																			 */
-					mItemHeight);
+			mItemHeight);
 			notifyDataSetChanged();
 		}
 
@@ -309,6 +282,11 @@ public class ShowPlant extends Activity {
 
 	} // end class ImageAdapter
 
+	/**
+	 * Get the seat code given the position (linear list that simulates a matrix).
+	 * @param pos
+	 * @return
+	 */
 	String getSeatCode(int pos) {
 		int column = pos % mNumColumns;
 		int row = pos / mNumColumns;

@@ -17,10 +17,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Access to the database to retrieve, store, update and delete data.
+ * @author diogo
+ *
+ */
 public class DBDataSource {
 
 	Context context;
-	DownloadImages downloader;
 
 	private SQLiteDatabase database;
 	private DBHelper dbHelper;
@@ -36,17 +40,27 @@ public class DBDataSource {
 			DBHelper.RESERVATION_SESSION_ID, DBHelper.RESERVATION_PLACES,
 			DBHelper.RESERVATION_DATE, DBHelper.RESERVATION_UPDATE_DATE };
 
+	/**
+	 * Opens a database connection.
+	 * @param context
+	 */
 	public DBDataSource(Context context) {
 		this.context = context;
-		downloader = new DownloadImages(context);
 		dbHelper = new DBHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the database connection.
+	 */
 	public void close() {
 		dbHelper.close();
 	}
 
+	/**
+	 * Clean data that is no longer valid: reservations older than the current date and
+	 * movies not in show.
+	 */
 	public void cleanOld() {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -74,7 +88,10 @@ public class DBDataSource {
 				+ " WHERE " + DBHelper.RESERVATION_DATE + " < Datetime('"
 				+ sdfDate.format(cal.getTime()) + "')");
 	}
-
+	
+	/**
+	 * Clen all entries in the database.
+	 */
 	public void cleanAll() {
 		cleanAllMovies();
 		cleanAllReservations();
@@ -82,6 +99,10 @@ public class DBDataSource {
 		close();
 	}
 
+	/**
+	 * Get a list of all movies stored in the database.
+	 * @return Movies currently showing.
+	 */
 	public List<Movie> getAllMovie() {
 		List<Movie> movies = new ArrayList<Movie>();
 
@@ -98,11 +119,20 @@ public class DBDataSource {
 		return movies;
 	}
 
+	/**
+	 * Get database cursor for movies currently showing.
+	 * @return
+	 */
 	public Cursor getMoviesCursor() {
 		return database.query(DBHelper.TABLE_MOVIE, allColumnsMovie, null,
 				null, null, null, null);
 	}
 
+	/**
+	 * Get a specific movie from the showing list.
+	 * @param id Identification of the movie
+	 * @return
+	 */
 	public Movie getMovie(long id) {
 
 		Cursor cursor = database.query(DBHelper.TABLE_MOVIE, allColumnsMovie,
@@ -118,6 +148,18 @@ public class DBDataSource {
 		}
 	}
 
+	/**
+	 * Create a new movie in the database.
+	 * @param name
+	 * @param duration
+	 * @param sinopsis
+	 * @param cover
+	 * @param trailer
+	 * @param dateFrom
+	 * @param dateUntil
+	 * @param updateDate
+	 * @return
+	 */
 	public Movie createMovie(String name, Integer duration, String sinopsis,
 			String cover, String trailer, Date dateFrom, Date dateUntil,
 			Date updateDate) {
@@ -139,12 +181,18 @@ public class DBDataSource {
 		cursor.close();
 
 		if (movie.getCover() != null && movie.getCover().length() > 10) {
+
+			DownloadImages downloader = new DownloadImages(context);
 			downloader.execute(movie.getCover(), movie.getIdMovie().toString());
 		}
 
 		return movie;
 	}
 
+	/**
+	 * Insert a movie in the database
+	 * @param movie
+	 */
 	public void insertMovie(Movie movie) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.MOVIE_ID, movie.getIdMovie());
@@ -169,10 +217,16 @@ public class DBDataSource {
 		database.insertOrThrow(DBHelper.TABLE_MOVIE, null, values);
 
 		if (movie.getCover() != null && movie.getCover().length() > 10) {
+
+			DownloadImages downloader = new DownloadImages(context);
 			downloader.execute(movie.getCover(), movie.getIdMovie().toString());
 		}
 	}
 
+	/**
+	 * Delete a specific movie from the database.
+	 * @param movie
+	 */
 	public void deleteMovie(Movie movie) {
 		long id = movie.getIdMovie();
 		database.delete(DBHelper.TABLE_MOVIE, DBHelper.MOVIE_ID + " = " + id,
@@ -180,6 +234,9 @@ public class DBDataSource {
 		MovieImages.removeImage(context, movie.getIdMovie());
 	}
 
+	/**
+	 * Deletes all movies and removes their covers from the application. 
+	 */
 	public void cleanAllMovies() {
 
 		for (Movie movie : getAllMovie()) {
@@ -189,6 +246,11 @@ public class DBDataSource {
 		database.delete(DBHelper.TABLE_MOVIE, null, null);
 	}
 
+	/**
+	 * Convert a movie cursor in a movie object
+	 * @param cursor
+	 * @return
+	 */
 	private Movie cursorToMovie(Cursor cursor) {
 		Movie movie = new Movie();
 		movie.setIdMovie((int) cursor.getLong(0));
@@ -215,6 +277,10 @@ public class DBDataSource {
 		return movie;
 	}
 
+	/**
+	 * List of all currently valid reservations.
+	 * @return
+	 */
 	public List<Reservation> getAllReservation() {
 		List<Reservation> reservations = new ArrayList<Reservation>();
 
@@ -251,6 +317,10 @@ public class DBDataSource {
 		}
 	}
 
+	/**
+	 * Insert a new reservation in the database.
+	 * @param reservation
+	 */
 	public void insertReservation(Reservation reservation) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.RESERVATION_ID, reservation.getIdReservation());
@@ -262,16 +332,28 @@ public class DBDataSource {
 		database.insertOrThrow(DBHelper.TABLE_RESERVATION, null, values);
 	}
 
+	/**
+	 * Delete a reservation from the database.
+	 * @param reservation
+	 */
 	public void deleteReservation(Reservation reservation) {
 		long id = reservation.getIdReservation();
 		database.delete(DBHelper.TABLE_RESERVATION, DBHelper.RESERVATION_ID
 				+ " = " + id, null);
 	}
 
+	/**
+	 * Clean all reservations from the database.
+	 */
 	public void cleanAllReservations() {
 		database.delete(DBHelper.TABLE_RESERVATION, null, null);
 	}
 
+	/**
+	 * Convert a reservation cursor in a cursor object.
+	 * @param cursor
+	 * @return
+	 */
 	private Reservation cursorToReservation(Cursor cursor) {
 		Reservation reservation = new Reservation();
 
@@ -288,6 +370,10 @@ public class DBDataSource {
 		return reservation;
 	}
 
+	/**
+	 * Get all sessions
+	 * @return
+	 */
 	public List<Session> getAllSession() {
 		List<Session> sessions = new ArrayList<Session>();
 
@@ -304,6 +390,11 @@ public class DBDataSource {
 		return sessions;
 	}
 
+	/**
+	 * Get all the reservations for a movie.
+	 * @param id Movie id
+	 * @return
+	 */
 	public List<Session> getSessionByMovie(long id) {
 		List<Session> sessions = new ArrayList<Session>();
 
@@ -319,12 +410,22 @@ public class DBDataSource {
 		return sessions;
 	}
 
+	/**
+	 * Get a database cursor to the sessions of a movie.
+	 * @param id Movie id
+	 * @return
+	 */
 	public Cursor getSessionByMovieCursor(long id) {
 		return database.query(DBHelper.TABLE_SESSION, allColumnsSession,
 				DBHelper.SESSION_MOVIE_ID + "=?",
 				new String[] { String.valueOf(id) }, null, null, null);
 	}
 
+	/**
+	 * Get the information from a specific session.
+	 * @param id
+	 * @return
+	 */
 	public Session getSession(long id) {
 
 		Cursor cursor = database.query(DBHelper.TABLE_SESSION,
@@ -340,6 +441,10 @@ public class DBDataSource {
 		}
 	}
 
+	/**
+	 * Insert a new session in the database
+	 * @param session
+	 */
 	public void insertSession(Session session) {
 		ContentValues values = new ContentValues();
 		values.put(DBHelper.SESSION_ID, session.getIdSession());
@@ -352,16 +457,28 @@ public class DBDataSource {
 		database.insertOrThrow(DBHelper.TABLE_SESSION, null, values);
 	}
 
+	/**
+	 * Delete a session from the database.
+	 * @param session
+	 */
 	public void deleteSession(Session session) {
 		long id = session.getIdSession();
 		database.delete(DBHelper.TABLE_SESSION, DBHelper.SESSION_ID + " = "
 				+ id, null);
 	}
 
+	/**
+	 * Clean all sessions from the database.
+	 */
 	public void cleanAllSessions() {
 		database.delete(DBHelper.TABLE_SESSION, null, null);
 	}
 
+	/**
+	 * Convert a cursor to a session in a session object.
+	 * @param cursor
+	 * @return
+	 */
 	private Session cursorToSession(Cursor cursor) {
 		Session session = new Session();
 

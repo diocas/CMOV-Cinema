@@ -35,6 +35,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+/**
+ * Show the movie info, including the sessions available
+ * @author diogo
+ *
+ */
 public class MovieInfo extends Activity {
 
 	private DBDataSource dataSource;

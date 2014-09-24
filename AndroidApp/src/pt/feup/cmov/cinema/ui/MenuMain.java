@@ -82,8 +82,14 @@ public class MenuMain extends Activity {
 		// Set the preferences of the application
 		new Preferences(this);
 
+		// Open the connection to the database
 		dataSource = new DBDataSource(this);
 
+		
+		/************************
+		 * Beginning of movies list
+		 ************************/
+		
 		String[] columnsMovies = new String[] { DBHelper.MOVIE_NAME,
 				DBHelper.MOVIE_COVER, DBHelper.MOVIE_DATE_FROM };
 		int[] toMovies = new int[] { R.id.movie_info_name, R.id.movie_info_img,
@@ -92,6 +98,7 @@ public class MenuMain extends Activity {
 		moviesAdapter = new SimpleCursorAdapter(this, R.layout.list_item_movie,
 				dataSource.getMoviesCursor(), columnsMovies, toMovies, 0);
 
+		// Set a view binder to show the cover image and format the date
 		moviesAdapter.setViewBinder(new ViewBinder() {
 
 			@Override
@@ -127,7 +134,13 @@ public class MenuMain extends Activity {
 			}
 
 		});
+		/************************
+		 * End of movies list
+		 ************************/
 		
+		/************************
+		 * Beginning of reservations list
+		 ************************/
 		String[] columnsReservations = new String[] { DBHelper.RESERVATION_ID,
 				DBHelper.RESERVATION_ID, DBHelper.RESERVATION_DATE,
 				DBHelper.RESERVATION_ID };
@@ -140,6 +153,7 @@ public class MenuMain extends Activity {
 				dataSource.getReservationsCursor(), columnsReservations,
 				toReservations, 0);
 
+		// Set a view binder to show the cover image and format the dates/hours
 		reservationsAdapter.setViewBinder(new ViewBinder() {
 
 			@Override
@@ -183,6 +197,9 @@ public class MenuMain extends Activity {
 			}
 
 		});
+		/************************
+		 * End of reservations list
+		 ************************/
 
 		cinemaUpdater = new CinemaUpdater(dataSource, this);
 
@@ -190,6 +207,9 @@ public class MenuMain extends Activity {
 
 	}
 
+	/**
+	 * Options menu
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -253,6 +273,12 @@ public class MenuMain extends Activity {
 		}
 	}
 
+	/**
+	 * Definition of the movie fragment.
+	 * Set the action for clicking and show the loading bar.
+	 * @author diogo
+	 *
+	 */
 	public class Movies extends Fragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -294,6 +320,13 @@ public class MenuMain extends Activity {
 		}
 	}
 
+
+	/**
+	 * Definition of the movie fragment.
+	 * Set the action for clicking and show the loading bar.
+	 * @author diogo
+	 *
+	 */
 	public class Reservations extends Fragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -344,6 +377,10 @@ public class MenuMain extends Activity {
 
 	}
 
+	/**
+	 * Sync the data with the server.
+	 * Show the loading bars.
+	 */
 	public void updateData() {
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -363,6 +400,9 @@ public class MenuMain extends Activity {
 		}
 	}
 
+	/**
+	 * Show the loading bars and hide the reservations list
+	 */
 	public void initUpdateReservationData() {
 
 		reservationsUpdateInProgress = false;
@@ -378,7 +418,10 @@ public class MenuMain extends Activity {
 		} catch (Exception e) {
 		}
 	}
-
+	
+	/**
+	 * hide the loading bars and show the reservations list
+	 */
 	public void finishUpdateReservationData() {
 		ListView reservationsList = (ListView) findViewById(R.id.reservationsList);
 		RelativeLayout reservationsSpiner = (RelativeLayout) findViewById(R.id.reservations_progressBar);
@@ -394,7 +437,10 @@ public class MenuMain extends Activity {
 		} catch (Exception e) {
 		}
 	}
-
+	
+	/**
+	 * Show the loading bars and hide the movies list
+	 */
 	public void initUpdateMovieData() {
 
 		ListView moviesList = (ListView) findViewById(R.id.moviesList);
@@ -409,6 +455,9 @@ public class MenuMain extends Activity {
 		}
 	}
 
+	/**
+	 * Hide the loading bars and show the movies list
+	 */
 	public void finishUpdateMovieData() {
 
 		moviesUpdateInProgress = false;
@@ -428,12 +477,18 @@ public class MenuMain extends Activity {
 		}
 	}
 
+	/**
+	 * When destroying the activity, free the database connection
+	 */
 	@Override
 	protected void onDestroy() {
 		dataSource.close();
 		super.onDestroy();
 	}
 
+	/**
+	 * If a reservation is deleted, update the reservations list.
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 

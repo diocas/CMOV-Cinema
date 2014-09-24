@@ -21,7 +21,12 @@ import org.apache.http.params.HttpParams;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
+/**
+ * Async task to execute an action in the server.
+ * @author diogo
+ *
+ * @param <T>
+ */
 public class ServerConnection<T> extends AsyncTask<ServerAction<T>, Void, Integer> {
 	private static final String TAG = "ServiceConnection";
 	
@@ -83,6 +88,10 @@ public class ServerConnection<T> extends AsyncTask<ServerAction<T>, Void, Intege
 		return responseStatusCode;
 	}
 
+	/**
+	 * Check the result and execute the corresponding function. These functions are passed
+	 * on the creation of the request.
+	 */
 	@Override
 	protected void onPostExecute(Integer HttpStatusCode) {
         if (resultFailed != null) {

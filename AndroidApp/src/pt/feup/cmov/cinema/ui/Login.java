@@ -17,6 +17,12 @@ import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Login activity. Allows the user to login to his account
+ * or create a new account.
+ * @author diogo
+ *
+ */
 public class Login extends Activity {
 
 	Button login_submit;
@@ -41,6 +47,9 @@ public class Login extends Activity {
 			register_submit = (Button) findViewById(R.id.register_submit);
 			register_email = (EditText) findViewById(R.id.register_email);
 
+			/**
+			 * Connect to server to get user information.
+			 */
 			login_submit.setOnClickListener(new View.OnClickListener() {
 				@SuppressWarnings("unchecked")
 				@Override
@@ -70,6 +79,9 @@ public class Login extends Activity {
 				}
 			});
 
+			/**
+			 * Connect to server to register user
+			 */
 			register_submit.setOnClickListener(new View.OnClickListener() {
 				@SuppressWarnings("unchecked")
 				@Override
@@ -105,6 +117,9 @@ public class Login extends Activity {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 
+	/**
+	 * Open the main activity (MenuMain)
+	 */
 	void goToMenu() {
 		Intent intent = new Intent(this, MenuMain.class);
 		startActivity(intent);

@@ -1,5 +1,10 @@
 package pt.feup.cmov.cinema.serverAccess;
 
+/**
+ * Server API
+ * @author diogo
+ *
+ */
 public enum ServerActions
 {
 	MoviesGet,
@@ -19,7 +24,7 @@ public enum ServerActions
 	UserPost,
 	UserPut;
 	
-	public static String ServiceLocation = "http://portatil-diogo:8080/cinemaServer/";
+	public static String ServiceLocation = "http://192.168.0.20:8080/cinemaServer/";
 
 	public String getUrl()
 	{

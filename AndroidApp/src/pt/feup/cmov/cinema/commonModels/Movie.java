@@ -3,6 +3,11 @@ package pt.feup.cmov.cinema.commonModels;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Model of a movie
+ * @author diogo
+ *
+ */
 public class Movie implements Serializable {
     private static final long serialVersionUID = 1L;
     

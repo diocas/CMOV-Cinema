@@ -12,6 +12,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
+/**
+ * Image downloader. Downloads images from the internet.
+ * @author diogo
+ *
+ */
 public class DownloadImages extends AsyncTask<String,Void,Bitmap> {
 
 	Context context;
@@ -20,6 +25,12 @@ public class DownloadImages extends AsyncTask<String,Void,Bitmap> {
 		this.context = context;
 	}
 	
+	/**
+	 * Download an image from the internet and store it in the app
+	 * @param url
+	 * @param idMovie
+	 * @return
+	 */
     private Bitmap DownloadImageBitmap(String url, int idMovie){
         HttpURLConnection connection = null;
         InputStream is = null;
@@ -39,13 +50,13 @@ public class DownloadImages extends AsyncTask<String,Void,Bitmap> {
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         }
-        finally {
-            connection.disconnect();
-            try {
-                is.close();
-            } catch (IOException e) {
-            }
-        }
+//        finally {
+//            connection.disconnect();
+//            try {
+//                is.close();
+//            } catch (IOException e) {
+//            }
+//        }
         return null;
     }
 

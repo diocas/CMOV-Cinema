@@ -18,6 +18,11 @@ import pt.feup.cmov.cinema.utils.*;
 
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Synchronization with the server.
+ * @author diogo
+ *
+ */
 public class CinemaUpdater {
 
 	private DBDataSource dataSource;
@@ -30,6 +35,10 @@ public class CinemaUpdater {
 		this.context = context;
 	}
 
+	/**
+	 * Update all elements in the database.
+	 * The synchronization follows a sequence: movies, sessions and then reservation.
+	 */
 	public void updateFromServer() {
 		try {
 			updateMovies();
@@ -40,6 +49,11 @@ public class CinemaUpdater {
 		}
 	}
 
+	/**
+	 * Update the movies list from the server, with the ones newer than the last sync.
+	 * Store them in the database.
+	 * If update success, calls the update of sessions. Otherwise, only calls the reservations update.
+	 */
 	@SuppressWarnings("unchecked")
 	private void updateMovies() {
 
@@ -77,6 +91,11 @@ public class CinemaUpdater {
 
 	}
 
+	/**
+	 * Update the sessions list from the server, with the ones newer than the last sync.
+	 * Store them in the database.
+	 * Calls the reservations update.
+	 */
 	@SuppressWarnings("unchecked")
 	private void updateSessions() {
 
@@ -95,7 +114,6 @@ public class CinemaUpdater {
 									dataSource.deleteSession(session);
 									dataSource.insertSession(session);
 								} catch (Exception ee) {
-									System.out.println("nao inseriu session");
 								}
 							}
 						}
@@ -119,6 +137,10 @@ public class CinemaUpdater {
 				ServerActions.SessionsGet, Preferences.getLastUpdateDate()));
 	}
 
+	/**
+	 * Update the reservations list from the server, with the ones newer than the last sync.
+	 * Store them in the database.
+	 */
 	@SuppressWarnings("unchecked")
 	private void updateReservations() {
 

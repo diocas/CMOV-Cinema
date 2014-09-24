@@ -26,6 +26,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Get a reservation info and allow the removal of it.
+ * @author diogo
+ *
+ */
 public class ReservationInfo extends Activity {
 
 	DBDataSource dataSource;
@@ -121,6 +126,10 @@ public class ReservationInfo extends Activity {
 		});
 	}
 
+	/**
+	 * If the removal was successful, notify the MenuMain activity to update the
+	 * reservations list.
+	 */
 	private void deleteReservationComplete() {
 
 		dataSource.deleteReservation(reservation);
@@ -131,6 +140,10 @@ public class ReservationInfo extends Activity {
 		finish();
 	}
 
+	
+	/*****************
+	 * Go back menu in the app icon
+	 *****************/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.reservation_info, menu);
